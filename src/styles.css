@@ -1,5 +1,7 @@
 @use '@angular/material' as mat;
 
+@include mat.core();
+
 /* === THEME === */
 html {
   @include mat.theme((
@@ -15,6 +17,47 @@ html {
   .mat-mdc-dialog-container .mat-mdc-dialog-surface {
     overflow: visible !important;
     border-radius: 24px !important;
+  }
+
+  /* ==== CAMPOS DE FORMULARIO MATERIAL ==== */
+  .mat-mdc-text-field-wrapper {
+    border-radius: 24px !important; /* redondear contenedor */
+    overflow: hidden;
+  }
+
+  /* === Apariencia "fill" === */
+  .mat-mdc-form-field-appearance-fill .mat-mdc-text-field-wrapper {
+    --mdc-filled-text-field-container-shape: 24px;
+    background-color: #f3f4f6; /* gris claro */
+  }
+
+  /* === Apariencia "outline" === */
+  .mat-mdc-form-field-appearance-outline .mat-mdc-text-field-wrapper {
+    --mdc-outlined-text-field-container-shape: 24px;
+    --mdc-outlined-text-field-outline-width: 1px;
+
+    /* colores */
+    --mdc-outlined-text-field-outline-color: #6b7280; /* gray-500 */
+    --mdc-outlined-text-field-focus-outline-color: #111827; /* gray-900 */
+    --mdc-outlined-text-field-hover-outline-color: #374151; /* gray-700 */
+    --mdc-outlined-text-field-input-text-color: #111827;
+    --mdc-outlined-text-field-label-text-color: #6b7280;
+    --mdc-outlined-text-field-focus-label-text-color: #111827;
+  }
+
+  /* Efectos hover y focus */
+  .mat-mdc-text-field-wrapper:hover {
+    --mdc-outlined-text-field-outline-color: #111827;
+  }
+
+  .mat-mdc-text-field-wrapper:focus-within {
+    --mdc-outlined-text-field-focus-outline-color: #111827;
+    --mdc-outlined-text-field-focus-label-text-color: #111827;
+  }
+
+  /* ==== LABEL EN FOCO ==== */
+  .mat-mdc-text-field--focused {
+    --mdc-outlined-text-field-label-text-color: #111827;
   }
 }
 
@@ -34,3 +77,6 @@ body {
 html, body {
   height: 100%;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

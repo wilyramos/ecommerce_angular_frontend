@@ -1,0 +1,136 @@
+<h2 class="text-2xl font-bold text-center text-gray-900 mb-4">Acceso</h2>
+
+<mat-dialog-content class="space-y-6">
+  <mat-tab-group class="w-full">
+    <!-- Inicia Sesión -->
+    <mat-tab label="Inicia Sesión">
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-4">
+
+        <div class="flex flex-col w-full">
+          <label class="text-gray-700 mb-1">Correo Electrónico</label>
+          <input
+            type="email"
+            formControlName="email"
+            required
+            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+          />
+          <span class="text-red-500 text-sm mt-1" *ngIf="loginForm.get('email')?.hasError('required')">
+            El correo es requerido.
+          </span>
+          <span class="text-red-500 text-sm mt-1" *ngIf="loginForm.get('email')?.hasError('email')">
+            Formato de correo inválido.
+          </span>
+        </div>
+
+        <div class="flex flex-col w-full">
+          <label class="text-gray-700 mb-1">Contraseña</label>
+          <input
+            type="password"
+            formControlName="password"
+            required
+            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+          />
+          <span class="text-red-500 text-sm mt-1" *ngIf="loginForm.get('password')?.hasError('required')">
+            La contraseña es requerida.
+          </span>
+        </div>
+
+        <div *ngIf="errorMessage" class="text-red-500 text-sm">
+          {{ errorMessage }}
+        </div>
+
+        <div class="flex justify-end gap-2 mt-2">
+          <button
+            type="button"
+            mat-button
+            mat-dialog-close
+            class="px-4 py-2 rounded-3xl border border-gray-400 hover:bg-gray-100"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            [disabled]="loginForm.invalid || isLoading"
+            class="px-6 py-2 rounded-3xl bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
+          >
+            <span *ngIf="!isLoading">Iniciar Sesión</span>
+            <span *ngIf="isLoading">Cargando...</span>
+          </button>
+        </div>
+      </form>
+    </mat-tab>
+
+    <!-- Registrarse -->
+    <mat-tab label="Regístrate">
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="space-y-4">
+        <div class="flex flex-col w-full">
+          <label class="text-gray-700 mb-1">Nombre completo</label>
+          <input
+            type="text"
+            formControlName="name"
+            required
+            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+          />
+          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('name')?.hasError('required')">
+            El nombre es requerido.
+          </span>
+        </div>
+
+        <div class="flex flex-col w-full">
+          <label class="text-gray-700 mb-1">Correo Electrónico</label>
+          <input
+            type="email"
+            formControlName="email"
+            required
+            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+          />
+          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('email')?.hasError('required')">
+            El correo es requerido.
+          </span>
+          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('email')?.hasError('email')">
+            Formato de correo inválido.
+          </span>
+        </div>
+
+        <div class="flex flex-col w-full">
+          <label class="text-gray-700 mb-1">Contraseña</label>
+          <input
+            type="password"
+            formControlName="password"
+            required
+            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+          />
+          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('password')?.hasError('required')">
+            La contraseña es requerida.
+          </span>
+          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('password')?.hasError('minlength')">
+            La contraseña debe tener al menos 6 caracteres.
+          </span>
+        </div>
+
+        <div *ngIf="errorMessage" class="text-red-500 text-sm">
+          {{ errorMessage }}
+        </div>
+
+        <div class="flex justify-end gap-2 mt-2">
+          <button
+            type="button"
+            mat-button
+            mat-dialog-close
+            class="px-4 py-2 rounded-3xl border border-gray-400 hover:bg-gray-100"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            [disabled]="registerForm.invalid || isLoading"
+            class="px-6 py-2 rounded-3xl bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
+          >
+            <span *ngIf="!isLoading">Registrarme</span>
+            <span *ngIf="isLoading">Registrando...</span>
+          </button>
+        </div>
+      </form>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>

@@ -1,0 +1,27 @@
+// src/app/.../auth-dialog.scss
+
+// 1. Pestañas (Tabs)
+// Overrides the active tab indicator and label color.
+.auth-tabs {
+  .mat-mdc-tab-indicator-bar {
+    background-color: #111827; // black
+  }
+  .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+    color: #111827; // black
+  }
+}
+
+// 2. Campos de Formulario (Form Fields)
+// Overrides the focus color for the outline variant.
+.mat-form-field-appearance-outline.mat-focused {
+  // Removes the default theme color glow.
+  .mat-mdc-form-field-focus-overlay {
+    opacity: 0;
+  }
+  // Sets the border and floating label to black on focus.
+  .mdc-notched-outline > *,
+  .mdc-floating-label {
+    border-color: #111827 !important;
+    color: #111827 !important;
+  }
+}

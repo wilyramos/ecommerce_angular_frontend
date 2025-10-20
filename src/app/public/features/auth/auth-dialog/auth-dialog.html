@@ -1,57 +1,79 @@
-<h2 class="text-2xl font-bold text-center text-gray-900 mb-4">Acceso</h2>
+<h2 class="text-xl p-6 text-gray-700">Bienvenido a BALENCIAGA</h2>
 
-<mat-dialog-content class="space-y-6">
+<mat-dialog-content class="p-6 pt-0">
   <mat-tab-group class="w-full">
-    <!-- Inicia Sesión -->
+    <!-- ================== LOGIN ================== -->
     <mat-tab label="Inicia Sesión">
-      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-4">
-
-        <div class="flex flex-col w-full">
-          <label class="text-gray-700 mb-1">Correo Electrónico</label>
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="onLogin()"
+        class="space-y-5 py-6 px-2"
+      >
+        <!-- EMAIL -->
+        <div>
+          <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">
+            Correo Electrónico
+          </label>
           <input
+            id="loginEmail"
             type="email"
             formControlName="email"
-            required
-            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+            placeholder="ejemplo@correo.com"
+            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
-          <span class="text-red-500 text-sm mt-1" *ngIf="loginForm.get('email')?.hasError('required')">
+          <p
+            *ngIf="isInvalidField(loginForm, 'email') && loginForm.get('email')?.hasError('required')"
+            class="text-red-500 text-sm mt-1"
+          >
             El correo es requerido.
-          </span>
-          <span class="text-red-500 text-sm mt-1" *ngIf="loginForm.get('email')?.hasError('email')">
+          </p>
+          <p
+            *ngIf="isInvalidField(loginForm, 'email') && loginForm.get('email')?.hasError('email')"
+            class="text-red-500 text-sm mt-1"
+          >
             Formato de correo inválido.
-          </span>
+          </p>
         </div>
 
-        <div class="flex flex-col w-full">
-          <label class="text-gray-700 mb-1">Contraseña</label>
+        <!-- PASSWORD -->
+        <div>
+          <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">
+            Contraseña
+          </label>
           <input
+            id="loginPassword"
             type="password"
             formControlName="password"
-            required
-            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+            placeholder="••••••••"
+            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
-          <span class="text-red-500 text-sm mt-1" *ngIf="loginForm.get('password')?.hasError('required')">
+          <p
+            *ngIf="isInvalidField(loginForm, 'password') && loginForm.get('password')?.hasError('required')"
+            class="text-red-500 text-sm mt-1"
+          >
             La contraseña es requerida.
-          </span>
+          </p>
         </div>
 
-        <div *ngIf="errorMessage" class="text-red-500 text-sm">
+        <!-- ERROR GENERAL -->
+        <div *ngIf="errorMessage" class="text-red-500 text-sm text-center">
           {{ errorMessage }}
         </div>
 
-        <div class="flex justify-end gap-2 mt-2">
+        <!-- BOTONES -->
+        <div class="flex justify-end gap-3 mt-4">
           <button
             type="button"
-            mat-button
             mat-dialog-close
-            class="px-4 py-2 rounded-3xl border border-gray-400 hover:bg-gray-100"
+            class="rounded-full px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
           >
             Cancelar
           </button>
+
           <button
             type="submit"
             [disabled]="loginForm.invalid || isLoading"
-            class="px-6 py-2 rounded-3xl bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
+            class="rounded-full bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition"
           >
             <span *ngIf="!isLoading">Iniciar Sesión</span>
             <span *ngIf="isLoading">Cargando...</span>
@@ -60,71 +82,104 @@
       </form>
     </mat-tab>
 
-    <!-- Registrarse -->
+    <!-- ================== REGISTRO ================== -->
     <mat-tab label="Regístrate">
-      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="space-y-4">
-        <div class="flex flex-col w-full">
-          <label class="text-gray-700 mb-1">Nombre completo</label>
+      <form
+        [formGroup]="registerForm"
+        (ngSubmit)="onRegister()"
+        class="space-y-5 py-6 px-2"
+      >
+        <!-- NAME -->
+        <div>
+          <label for="registerName" class="block text-sm font-medium text-gray-700 mb-1">
+            Nombre completo
+          </label>
           <input
+            id="registerName"
             type="text"
             formControlName="name"
-            required
-            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+            placeholder="Juan Pérez"
+            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
-          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('name')?.hasError('required')">
+          <p
+            *ngIf="isInvalidField(registerForm, 'name') && registerForm.get('name')?.hasError('required')"
+            class="text-red-500 text-sm mt-1"
+          >
             El nombre es requerido.
-          </span>
+          </p>
         </div>
 
-        <div class="flex flex-col w-full">
-          <label class="text-gray-700 mb-1">Correo Electrónico</label>
+        <!-- EMAIL -->
+        <div>
+          <label for="registerEmail" class="block text-sm font-medium text-gray-700 mb-1">
+            Correo Electrónico
+          </label>
           <input
+            id="registerEmail"
             type="email"
             formControlName="email"
-            required
-            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+            placeholder="ejemplo@correo.com"
+            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
-          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('email')?.hasError('required')">
+          <p
+            *ngIf="isInvalidField(registerForm, 'email') && registerForm.get('email')?.hasError('required')"
+            class="text-red-500 text-sm mt-1"
+          >
             El correo es requerido.
-          </span>
-          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('email')?.hasError('email')">
+          </p>
+          <p
+            *ngIf="isInvalidField(registerForm, 'email') && registerForm.get('email')?.hasError('email')"
+            class="text-red-500 text-sm mt-1"
+          >
             Formato de correo inválido.
-          </span>
+          </p>
         </div>
 
-        <div class="flex flex-col w-full">
-          <label class="text-gray-700 mb-1">Contraseña</label>
+        <!-- PASSWORD -->
+        <div>
+          <label for="registerPassword" class="block text-sm font-medium text-gray-700 mb-1">
+            Contraseña
+          </label>
           <input
+            id="registerPassword"
             type="password"
             formControlName="password"
-            required
-            class="w-full px-4 py-3 rounded-3xl border border-gray-400 focus:border-black focus:ring-1 focus:ring-black outline-none text-gray-900"
+            placeholder="••••••••"
+            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
-          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('password')?.hasError('required')">
+          <p
+            *ngIf="isInvalidField(registerForm, 'password') && registerForm.get('password')?.hasError('required')"
+            class="text-red-500 text-sm mt-1"
+          >
             La contraseña es requerida.
-          </span>
-          <span class="text-red-500 text-sm mt-1" *ngIf="registerForm.get('password')?.hasError('minlength')">
+          </p>
+          <p
+            *ngIf="isInvalidField(registerForm, 'password') && registerForm.get('password')?.hasError('minlength')"
+            class="text-red-500 text-sm mt-1"
+          >
             La contraseña debe tener al menos 6 caracteres.
-          </span>
+          </p>
         </div>
 
-        <div *ngIf="errorMessage" class="text-red-500 text-sm">
+        <!-- ERROR GENERAL -->
+        <div *ngIf="errorMessage" class="text-red-500 text-sm text-center">
           {{ errorMessage }}
         </div>
 
-        <div class="flex justify-end gap-2 mt-2">
+        <!-- BOTONES -->
+        <div class="flex justify-end gap-3 mt-4">
           <button
             type="button"
-            mat-button
             mat-dialog-close
-            class="px-4 py-2 rounded-3xl border border-gray-400 hover:bg-gray-100"
+            class="rounded-full px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
           >
             Cancelar
           </button>
+
           <button
             type="submit"
             [disabled]="registerForm.invalid || isLoading"
-            class="px-6 py-2 rounded-3xl bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
+            class="rounded-full bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition"
           >
             <span *ngIf="!isLoading">Registrarme</span>
             <span *ngIf="isLoading">Registrando...</span>

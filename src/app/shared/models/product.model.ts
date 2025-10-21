@@ -17,7 +17,7 @@ export interface ProductVariant {
 export interface Product {
   _id?: string;
   name: string;
-  slug: string;
+  slug?: string;
   shortDescription?: string;
   longDescription?: string;
   variants: ProductVariant[];

@@ -54,7 +54,7 @@ export class ProductList {
 
   openProductDialog(product?: Product): void {
     const dialogRef = this.dialog.open(ProductFormComponent, {
-      width: '1600px',
+      width: '2000PX',
       data: {
         product: product,
         categories: this.categories(),

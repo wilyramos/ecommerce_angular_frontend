@@ -57,7 +57,6 @@ export class ProductFormComponent implements OnInit {
     // ======= Inicializa el formulario principal =======
     this.form = this.fb.group({
       name: [this.data.product?.name || '', Validators.required],
-      slug: [this.data.product?.slug || '', Validators.required],
       shortDescription: [this.data.product?.shortDescription || ''],
       longDescription: [this.data.product?.longDescription || ''],
       category: [this.data.product?.category || '', Validators.required],
@@ -134,7 +133,6 @@ export class ProductFormComponent implements OnInit {
     // Prepara el payload compatible con el backend
     const payload: Product = {
       name: formValue.name,
-      slug: formValue.slug,
       shortDescription: formValue.shortDescription || '',
       longDescription: formValue.longDescription || '',
       category: formValue.category,

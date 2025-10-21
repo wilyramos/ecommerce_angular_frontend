@@ -1,0 +1,39 @@
+@if (product(); as product) {
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div>
+        <img [src]="product.variants[0].images?.[0] || 'https://placehold.co/600x800'" [alt]="product.name" class="w-full h-auto object-cover rounded-lg shadow-lg">
+      </div>
+
+      <div class="flex flex-col">
+        <h1 class="text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">{{ product.name }}</h1>
+        <p class="text-2xl mt-3 text-gray-900">${{ product.variants[0].price }}</p>
+
+        <div class="mt-6">
+          <h3 class="text-sm font-medium text-gray-900">Descripción</h3>
+          <p class="mt-2 text-base text-gray-600">{{ product.shortDescription }}</p>
+        </div>
+
+        <div class="mt-8">
+          <div>
+            <h3 class="text-sm font-medium text-gray-900">Talla</h3>
+            <div class="flex space-x-2 mt-2">
+              <button mat-flat-button>S</button>
+              <button mat-stroked-button>M</button>
+              <button mat-stroked-button>L</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-8">
+          <button mat-flat-button color="primary" class="w-full !py-6 !text-lg">
+            <mat-icon>shopping_cart</mat-icon>
+            <span>Añadir al Carrito</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <p class="text-center py-20">Cargando producto...</p>
+}

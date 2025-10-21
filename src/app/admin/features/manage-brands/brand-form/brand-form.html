@@ -1,0 +1,29 @@
+<h1 mat-dialog-title class="text-xl font-semibold">
+  {{ isEditMode ? 'Editar Marca' : 'Nueva Marca' }}
+</h1>
+
+<mat-dialog-content>
+  <form [formGroup]="brandForm" class="flex flex-col gap-4 py-4">
+    <mat-form-field >
+      <mat-label>Nombre de la Marca</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field >
+      <mat-label>URL del Logo</mat-label>
+      <input matInput formControlName="logo" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">Cancelar</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSave()"
+    [disabled]="brandForm.invalid"
+  >
+    Guardar
+  </button>
+</mat-dialog-actions>

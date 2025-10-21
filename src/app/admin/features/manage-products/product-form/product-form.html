@@ -1,0 +1,73 @@
+<h1 mat-dialog-title class="text-xl font-semibold">
+  {{ isEditMode ? 'Editar Producto' : 'Nuevo Producto' }}
+</h1>
+
+<mat-dialog-content>
+  <form [formGroup]="productForm" class="grid grid-cols-2 gap-4 py-4">
+    <mat-form-field class="col-span-2 sm:col-span-1">
+      <mat-label>Nombre del Producto</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field class="col-span-2 sm:col-span-1">
+      <mat-label>Slug</mat-label>
+      <input matInput formControlName="slug" />
+    </mat-form-field>
+
+    <div class="col-span-2 mt-4">
+      <h3 class="text-lg font-medium mb-2">Variantes</h3>
+      <div formArrayName="variants">
+        @for (variant of variants.controls; track $index) {
+        <div
+          [formGroupName]="$index"
+          class="grid grid-cols-12 gap-3 p-4 mb-3 border rounded-lg relative"
+        >
+          <mat-form-field  class="col-span-12 sm:col-span-4">
+            <mat-label>SKU</mat-label>
+            <input matInput formControlName="sku" />
+          </mat-form-field>
+
+          <mat-form-field class="col-span-6 sm:col-span-3">
+            <mat-label>Precio</mat-label>
+            <input matInput formControlName="price" type="number" />
+          </mat-form-field>
+
+          <mat-form-field class="col-span-6 sm:col-span-3">
+            <mat-label>Stock</mat-label>
+            <input matInput formControlName="stock" type="number" />
+          </mat-form-field>
+
+          <div
+            class="col-span-12 sm:col-span-2 flex items-center justify-end"
+          >
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeVariant($index)"
+              aria-label="Eliminar variante"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+      <button mat-stroked-button type="button" (click)="addVariant()">
+        <mat-icon>add</mat-icon>
+        <span>Añadir Variante</span>
+      </button>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">Cancelar</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSave()"
+    [disabled]="productForm.invalid"
+  >
+    Guardar
+  </button>
+</mat-dialog-actions>

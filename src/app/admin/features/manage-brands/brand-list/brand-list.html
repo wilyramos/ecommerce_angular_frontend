@@ -1,0 +1,55 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold text-neutral-800">Gestionar Marcas</h1>
+  <button mat-flat-button color="primary" (click)="openBrandDialog()">
+    <mat-icon>add</mat-icon>
+    <span>Nueva Marca</span>
+  </button>
+</div>
+
+@if (brands().length > 0) {
+<div class="bg-white shadow-md rounded-lg overflow-hidden">
+  <table class="min-w-full divide-y divide-neutral-200">
+    <thead class="bg-neutral-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+          Logo
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+          Nombre
+        </th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+          Acciones
+        </th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-neutral-200">
+      @for (brand of brands(); track brand._id) {
+      <tr>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <img [src]="brand.logo || 'https://placehold.co/40x40'" alt="{{ brand.name }}"
+            class="w-10 h-10 rounded-md object-cover" />
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">
+          {{ brand.name }}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+          <button mat-icon-button (click)="openBrandDialog(brand)" aria-label="Editar marca">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteBrand(brand._id)" aria-label="Eliminar marca">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+} @else {
+<div class="text-center p-8 border-2 border-dashed border-neutral-200 rounded-lg">
+  <p class="text-neutral-500">No hay marcas para mostrar.</p>
+  <p class="text-sm text-neutral-400 mt-2">
+    Creá tu primera marca haciendo clic en el botón "Nueva Marca".
+  </p>
+</div>
+}

@@ -1,0 +1,61 @@
+<aside class="h-full w-64 bg-white text-neutral-900 flex flex-col border-r border-neutral-200">
+  <!-- LOGO -->
+  <div class="h-20 flex items-center justify-center border-b border-neutral-200 uppercase tracking-[0.25em] select-none">
+    <h1 class="text-xl font-semibold">BALEN ADMIN</h1>
+  </div>
+
+  <!-- NAV -->
+  <nav class="flex-grow flex flex-col py-6 px-4 space-y-1 text-sm font-medium">
+
+    <a routerLink="/admin/dashboard"
+       routerLinkActive="bg-neutral-100 text-neutral-900"
+       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-neutral-100 transition-colors">
+      <ng-icon name="lucideLayoutDashboard" class="w-5 h-5"></ng-icon>
+      <span>Dashboard</span>
+    </a>
+
+    <a routerLink="/admin/products"
+       routerLinkActive="bg-neutral-100 text-neutral-900"
+       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-neutral-100 transition-colors">
+      <ng-icon name="lucidePackage" class="w-5 h-5"></ng-icon>
+      <span>Productos</span>
+    </a>
+
+    <a routerLink="/admin/orders"
+       routerLinkActive="bg-neutral-100 text-neutral-900"
+       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-neutral-100 transition-colors">
+      <ng-icon name="lucideShoppingCart" class="w-5 h-5"></ng-icon>
+      <span>Órdenes</span>
+    </a>
+
+    <a routerLink="/admin/users"
+       routerLinkActive="bg-neutral-100 text-neutral-900"
+       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-neutral-100 transition-colors">
+      <ng-icon name="lucideUsers" class="w-5 h-5"></ng-icon>
+      <span>Usuarios</span>
+    </a>
+
+    <a routerLink="/admin/categories"
+       routerLinkActive="bg-neutral-100 text-neutral-900"
+       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-neutral-100 transition-colors">
+      <ng-icon name="lucideTags" class="w-5 h-5"></ng-icon>
+      <span>Categorías</span>
+    </a>
+
+    <a routerLink="/admin/brands"
+       routerLinkActive="bg-neutral-100 text-neutral-900"
+       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-neutral-100 transition-colors">
+      <ng-icon name="lucideBadgeCheck" class="w-5 h-5"></ng-icon>
+      <span>Marcas</span>
+    </a>
+  </nav>
+
+  <!-- FOOTER -->
+  <div class="border-t border-neutral-200 p-5">
+    <a routerLink="/"
+       class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-neutral-100 transition-colors">
+      <ng-icon name="lucideStore" class="w-5 h-5"></ng-icon>
+      <span class="text-sm">Ver Tienda</span>
+    </a>
+  </div>
+</aside>

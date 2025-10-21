@@ -1,6 +1,6 @@
-// Este modelo debe coincidir con la respuesta de tu API de NestJS
+//File: frontend/src/app/shared/models/product.model.ts
 
-export interface Attribute {
+export interface ProductAttribute {
   key: string;
   value: string;
 }
@@ -8,23 +8,23 @@ export interface Attribute {
 export interface ProductVariant {
   sku: string;
   price: number;
-  salePrice?: number;
+  salePrice?: number | null;
   stock: number;
-  attributes: Attribute[];
+  attributes: ProductAttribute[];
   images?: string[];
 }
 
 export interface Product {
-  _id: string; // Mongoose usa _id
+  _id?: string;
   name: string;
   slug: string;
   shortDescription?: string;
   longDescription?: string;
   variants: ProductVariant[];
   isActive: boolean;
-  category: any; // Podés crear un modelo Category más adelante
-  brand?: any;   // Podés crear un modelo Brand más adelante
+  category: string; // ID de categoría
+  brand?: string; // ID de marca opcional
   tags?: string[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

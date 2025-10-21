@@ -19,7 +19,6 @@ import type { AuthResponse, LoginDto, RegisterDto } from '../../../../shared/mod
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,

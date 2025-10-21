@@ -17,7 +17,7 @@ export const ADMIN_ROUTES: Routes = [
         path: 'products',
         title: 'Productos',
         loadComponent: () =>
-          import('./features/manage-products/product-list/product-list').then((m) => m.ProductListComponent),
+          import('./features/manage-products/product-list/product-list').then((m) => m.ProductList),
       },
       {
         path: 'categories',

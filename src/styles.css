@@ -20,7 +20,7 @@ html {
   .mat-mdc-text-field-wrapper {
     overflow: hidden;
     box-shadow: none;
-    height: 48px;
+    /* height: 48px; */
   }
 
   /* === Apariencia "fill" === */

@@ -15,14 +15,11 @@ import { MatDialog } from '@angular/material/dialog';
   standalone: true,
   imports: [
     RouterLink,
-    RouterLinkActive,
     MatIconModule,
     MatButtonModule,
     MatBadgeModule,
     MatMenuModule,
     MatDividerModule,
-    NgIf,
-    AuthDialog,
   ],
   templateUrl: './header.html',
 })

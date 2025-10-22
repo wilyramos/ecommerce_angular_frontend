@@ -1,4 +1,6 @@
-//File: frontend/src/app/shared/models/product.model.ts
+// File: frontend/src/app/shared/models/product.model.ts
+import { Category } from "./category.model";
+import { Brand } from "./brand.model";
 
 export interface ProductAttribute {
   key: string;
@@ -14,7 +16,8 @@ export interface ProductVariant {
   images?: string[];
 }
 
-export interface Product {
+// --- MODELO BASE (ligero) ---
+export interface ProductBase {
   _id?: string;
   name: string;
   slug?: string;
@@ -22,9 +25,16 @@ export interface Product {
   longDescription?: string;
   variants: ProductVariant[];
   isActive: boolean;
-  category: string; // ID de categoría
-  brand?: string; // ID de marca opcional
+  category: string;
+  brand?: string;
   tags?: string[];
   createdAt?: string;
   updatedAt?: string;
 }
+
+// --- MODELO EXPANDIDO (con objetos completos) ---
+export interface PopulatedProduct extends Omit<ProductBase, 'category' | 'brand'> {
+  category: Category;
+  brand?: Brand;
+};
+

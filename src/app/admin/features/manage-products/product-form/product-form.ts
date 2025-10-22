@@ -15,11 +15,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // ✅ import snackbar
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { of, switchMap } from 'rxjs';
 
-import { Product } from '../../../../shared/models/product.model';
+import { ProductBase } from '../../../../shared/models/product.model';
 import { Category } from '../../../../shared/models/category.model';
 import { Brand } from '../../../../shared/models/brand.model';
 import { AdminProduct } from '../admin-product';
@@ -36,41 +35,35 @@ import { AdminProduct } from '../admin-product';
     MatInputModule,
     MatDialogModule,
     MatSlideToggleModule,
-    MatSnackBarModule, // ✅ módulo agregado
+    MatSnackBarModule,
   ],
   templateUrl: './product-form.html',
 })
 export class ProductFormComponent implements OnInit {
   form!: FormGroup;
-  isEditMode = false;
   filesToUpload: Map<number, File[]> = new Map();
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: { product?: Product; categories: Category[]; brands: Brand[] },
+    public data: { categories: Category[]; brands: Brand[] },
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ProductFormComponent>,
     private productService: AdminProduct,
-    private snackBar: MatSnackBar // ✅ inyección del snackbar
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    this.isEditMode = !!this.data.product;
-
     this.form = this.fb.group({
-      name: [this.data.product?.name || '', Validators.required],
-      shortDescription: [this.data.product?.shortDescription || ''],
-      category: [this.data.product?.category || '', Validators.required],
-      brand: [this.data.product?.brand || ''],
-      isActive: [this.data.product?.isActive ?? true],
+      name: ['', Validators.required],
+      shortDescription: [''],
+      category: ['', Validators.required],
+      brand: [''],
+      isActive: [true],
       variants: this.fb.array([]),
     });
 
-    if (this.isEditMode && this.data.product?.variants?.length) {
-      this.data.product.variants.forEach((variant) => this.addVariant(variant));
-    } else {
-      this.addVariant();
-    }
+    // siempre inicia con una variante vacía
+    this.addVariant();
   }
 
   // ========= Getters =========
@@ -87,23 +80,16 @@ export class ProductFormComponent implements OnInit {
   }
 
   // ========= Métodos de Variantes =========
-  addVariant(variant?: any): void {
+  addVariant(): void {
     const variantGroup = this.fb.group({
-      sku: [variant?.sku || '', Validators.required],
-      price: [variant?.price || 0, [Validators.required, Validators.min(0)]],
-      stock: [variant?.stock || 0, [Validators.required, Validators.min(0)]],
-      images: this.fb.control(variant?.images || []),
+      sku: ['', Validators.required],
+      price: [0, [Validators.required, Validators.min(0)]],
+      stock: [0, [Validators.required, Validators.min(0)]],
+      images: this.fb.control([]),
       attributes: this.fb.array([]),
     });
 
     this.variants.push(variantGroup);
-    const currentIndex = this.variants.length - 1;
-
-    if (variant?.attributes?.length) {
-      variant.attributes.forEach((attr: any) =>
-        this.addAttribute(currentIndex, attr)
-      );
-    }
   }
 
   removeVariant(index: number): void {
@@ -111,11 +97,11 @@ export class ProductFormComponent implements OnInit {
     this.filesToUpload.delete(index);
   }
 
-  addAttribute(variantIndex: number, attribute?: any): void {
+  addAttribute(variantIndex: number): void {
     const attributesArray = this.getAttributesArray(variantIndex);
     const attrGroup = this.fb.group({
-      key: [attribute?.key || '', Validators.required],
-      value: [attribute?.value || '', Validators.required],
+      key: ['', Validators.required],
+      value: ['', Validators.required],
     });
     attributesArray.push(attrGroup);
   }
@@ -142,22 +128,17 @@ export class ProductFormComponent implements OnInit {
   removeImage(variantIndex: number, imageIndex: number, imageUrl: string): void {
     const imagesControl = this.getVariantImages(variantIndex);
     const currentImages = imagesControl.value as string[];
-
-    if (imageUrl.startsWith('blob:')) {
-      const filesForVariant = this.filesToUpload.get(variantIndex) || [];
-      const fileIndexToRemove = currentImages.filter(url => url.startsWith('blob:')).indexOf(imageUrl);
-
-      if (fileIndexToRemove !== -1 && filesForVariant.length > fileIndexToRemove) {
-        filesForVariant.splice(fileIndexToRemove, 1);
-        this.filesToUpload.set(variantIndex, filesForVariant);
-      }
-    }
-
     currentImages.splice(imageIndex, 1);
     imagesControl.setValue(currentImages);
+
+    const filesForVariant = this.filesToUpload.get(variantIndex) || [];
+    if (imageUrl.startsWith('blob:') && filesForVariant.length > imageIndex) {
+      filesForVariant.splice(imageIndex, 1);
+      this.filesToUpload.set(variantIndex, filesForVariant);
+    }
   }
 
-  // ========= Lógica de Guardado =========
+  // ========= Guardar producto =========
   onSave(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -176,46 +157,36 @@ export class ProductFormComponent implements OnInit {
 
     upload$.pipe(
       switchMap((uploadResult: any) => {
-        // Adaptamos la respuesta del backend
         const uploadedUrls = Array.isArray(uploadResult)
           ? uploadResult.map((file: any) => file.url)
           : uploadResult.urls ?? [];
 
         let urlIdx = 0;
-
         const formValue = this.form.getRawValue();
-        const payload: Product = {
+
+        const payload: ProductBase = {
           ...formValue,
           variants: formValue.variants.map((variant: any, index: number) => {
             const newFilesCount = this.filesToUpload.get(index)?.length || 0;
             const newUrlsForVariant = uploadedUrls.slice(urlIdx, urlIdx + newFilesCount);
             urlIdx += newFilesCount;
 
-            const existingUrls = variant.images.filter(
-              (url: string) => !url.startsWith('blob:')
-            );
-
             return {
               ...variant,
-              images: [...existingUrls, ...newUrlsForVariant],
+              images: [...newUrlsForVariant],
             };
           }),
         };
 
-        if (this.isEditMode && this.data.product?._id) {
-          return this.productService.updateProduct(this.data.product._id, payload);
-        } else {
-          return this.productService.createProduct(payload);
-        }
+        return this.productService.createProduct(payload);
       })
     ).subscribe({
       next: (result) => {
-        console.log(this.isEditMode ? '✅ Producto actualizado:' : '✅ Producto creado:', result);
+        console.log('✅ Producto creado:', result);
         this.dialogRef.close(true);
       },
-      error: (err) => console.error('❌ Error en el proceso de guardado:', err),
+      error: (err) => console.error('❌ Error al crear producto:', err),
     });
-
   }
 
   close(): void {

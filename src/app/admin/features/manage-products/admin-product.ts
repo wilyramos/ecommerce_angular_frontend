@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import type { Product } from '../../../shared/models/product.model';
+import type { ProductBase, PopulatedProduct } from '../../../shared/models/product.model';
 import { environment } from '../../../../environments/environment';
 
 
@@ -15,17 +15,17 @@ export class AdminProduct {
 
   constructor() { }
 
-  getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiUrl);
+  getProducts(): Observable<PopulatedProduct[]> {
+    return this.http.get<PopulatedProduct[]>(this.apiUrl);
   }
 
-  createProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product);
+  createProduct(product: ProductBase): Observable<ProductBase> {
+    return this.http.post<ProductBase>(this.apiUrl, product);
   }
 
-  updateProduct(productId: string, product: Product): Observable<Product> {
+  updateProduct(productId: string, product: ProductBase): Observable<ProductBase> {
     const url = `${this.apiUrl}/${productId}`;
-    return this.http.patch<Product>(url, product);
+    return this.http.patch<ProductBase>(url, product);
   }
 
   deleteProduct(productId: string): Observable<void> {

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Product } from '../../models/product.model';
+import { ProductBase } from '../../models/product.model';
 
 
 @Component({
@@ -10,5 +10,5 @@ import { Product } from '../../models/product.model';
 })
 export class ProductCard {
 
-  @Input({ required: true }) product!: Product;
+  @Input({ required: true }) product!: ProductBase;
 }

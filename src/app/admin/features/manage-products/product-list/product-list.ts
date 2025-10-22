@@ -11,9 +11,10 @@ import { AdminCategoryService } from '../../manage-categories/admin-category';
 import { AdminBrandService } from '../../manage-brands/admin-brand';
 
 // --- Modelos ---
-import { Product } from '../../../../shared/models/product.model';
+import type { PopulatedProduct } from '../../../../shared/models/product.model';
 import { Category } from '../../../../shared/models/category.model';
 import { Brand } from '../../../../shared/models/brand.model';
+import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
 // --- Componente de Diálogo ---
 import { ProductFormComponent } from '../product-form/product-form';
@@ -32,7 +33,7 @@ export class ProductList {
   private dialog = inject(MatDialog);
 
   // --- Signals para manejar el estado ---
-  public products = signal<Product[]>([]);
+  public products = signal<PopulatedProduct[]>([]);
   public categories = signal<Category[]>([]);
   public brands = signal<Brand[]>([]);
 
@@ -52,7 +53,7 @@ export class ProductList {
     });
   }
 
-  openProductDialog(product?: Product): void {
+  openProductDialog(product?: PopulatedProduct): void {
     const dialogRef = this.dialog.open(ProductFormComponent, {
       width: '2000PX',
       data: {
@@ -71,10 +72,19 @@ export class ProductList {
   }
 
   deleteProduct(id: string) {
-    if (confirm('¿Estás seguro de que querés eliminar este producto?')) {
-      this.productService.deleteProduct(id).subscribe(() => {
-        this.loadInitialData();
-      });
-    }
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '600px',
+      data: {
+        title: 'Confirmar eliminación',
+        message: '¿Estás seguro de que deseas eliminar este producto?',
+      },
+    });
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.productService.deleteProduct(id).subscribe(() => {
+          this.loadInitialData();
+        });
+      }
+    });
   }
 }

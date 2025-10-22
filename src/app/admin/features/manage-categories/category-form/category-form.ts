@@ -30,12 +30,11 @@ import { AdminCategoryService } from '../admin-category';
 export class CategoryFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private categoryService = inject(AdminCategoryService);
-  public dialogRef = inject(MatDialogRef<CategoryFormComponent>);
+  private dialogRef = inject(MatDialogRef<CategoryFormComponent>);
 
   isEditMode = false;
-  categories: Category[] = []; // lista de categorías para asignar parentCategory
+  categories: Category[] = [];
 
-  // === Formulario ===
   categoryForm = this.fb.group({
     name: ['', Validators.required],
     parentCategory: ['' as string | null],
@@ -44,7 +43,6 @@ export class CategoryFormComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { category?: Category }) {
     this.isEditMode = !!this.data?.category;
 
-    // Si se está editando, precargar valores
     if (this.isEditMode && this.data.category) {
       const parent =
         (this.data.category.parentCategory as any)?._id ||
@@ -61,7 +59,7 @@ export class CategoryFormComponent implements OnInit {
     this.loadCategories();
   }
 
-  // === Cargar categorías para el select ===
+  // === Cargar categorías ===
   loadCategories() {
     this.categoryService.getCategories().subscribe({
       next: (cats) => (this.categories = cats),
@@ -73,12 +71,11 @@ export class CategoryFormComponent implements OnInit {
   onSave(): void {
     if (this.categoryForm.invalid) return;
 
-    const formValue = this.categoryForm.value;
+    const { name, parentCategory } = this.categoryForm.value;
 
-    // Armar el payload que el backend espera
     const payload = {
-      name: formValue.name!,
-      parentCategory: formValue.parentCategory || undefined, // el backend valida con @IsMongoId()
+      name: name!,
+      parentCategory: parentCategory || undefined,
     };
 
     const operation = this.isEditMode

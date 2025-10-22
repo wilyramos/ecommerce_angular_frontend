@@ -5,4 +5,6 @@ export interface Category {
   name: string;
   slug: string;
   parentCategory?: string | Category | null;
+  ancestors?: string[];
+  children?: Category[]; // Para árbol jerárquico
 }

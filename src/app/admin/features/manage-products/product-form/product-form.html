@@ -1,61 +1,47 @@
-<h1
-  mat-dialog-title
-  class="text-2xl font-bold text-gray-900 border-b pb-3 flex items-center gap-2"
->
-  <mat-icon class="text-primary-500">{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
+<h1 mat-dialog-title class="text-2xl font-bold text-gray-900 border-b pb-3 flex items-center gap-2">
+  <mat-icon class="text-primary-500">{{
+    isEditMode ? 'edit' : 'add_circle'
+    }}</mat-icon>
   {{ isEditMode ? 'Editar Producto' : 'Nuevo Producto' }}
 </h1>
 
 <mat-dialog-content class="max-h-[75vh] overflow-y-auto px-2 sm:px-6">
-  <form
-    [formGroup]="form"
-    class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 py-6"
-  >
-    <!-- Nombre -->
+  <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 py-6">
     <mat-form-field class="w-full col-span-2">
       <mat-label>Nombre del Producto</mat-label>
       <input matInput formControlName="name" placeholder="Ej: Protector Lamiglass Ultra" />
     </mat-form-field>
 
-    <!-- Categoría -->
     <mat-form-field class="w-full">
       <mat-label>Categoría</mat-label>
       <mat-select formControlName="category" placeholder="Selecciona una categoría">
         @for (cat of data.categories; track cat._id) {
-          <mat-option [value]="cat._id">{{ cat.name }}</mat-option>
+        <mat-option [value]="cat._id">{{ cat.name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
 
-    <!-- Marca -->
     <mat-form-field class="w-full">
       <mat-label>Marca</mat-label>
       <mat-select formControlName="brand" placeholder="Selecciona una marca (opcional)">
         @for (brand of data.brands; track brand._id) {
-          <mat-option [value]="brand._id">{{ brand.name }}</mat-option>
+        <mat-option [value]="brand._id">{{ brand.name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
 
-    <!-- Descripción corta -->
     <mat-form-field class="md:col-span-2 w-full">
       <mat-label>Descripción corta</mat-label>
-      <textarea
-        matInput
-        rows="3"
-        formControlName="shortDescription"
-        placeholder="Ej: Protector de pantalla flexible de alta resistencia..."
-      ></textarea>
+      <textarea matInput rows="3" formControlName="shortDescription"
+        placeholder="Ej: Protector de pantalla flexible de alta resistencia..."></textarea>
     </mat-form-field>
 
-    <!-- Estado -->
     <div class="md:col-span-2 flex items-center justify-between mt-1">
       <mat-slide-toggle formControlName="isActive" color="primary">
         Producto activo
       </mat-slide-toggle>
     </div>
 
-    <!-- VARIANTES -->
     <div class="md:col-span-2 mt-8">
       <h3 class="text-lg font-semibold mb-4 border-b pb-2 flex items-center gap-2">
         <mat-icon class="text-primary-500">inventory_2</mat-icon>
@@ -63,93 +49,96 @@
       </h3>
 
       <div formArrayName="variants" class="space-y-6">
-        @for (variant of variants.controls; track $index) {
-          <div
-            [formGroupName]="$index"
-            class=" border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all"
-          >
-            <div class="grid grid-cols-12 gap-4">
-              <mat-form-field class="col-span-12 sm:col-span-4">
-                <mat-label>SKU</mat-label>
-                <input matInput formControlName="sku" placeholder="Ej: LAM-001" />
-              </mat-form-field>
+        @for (variant of variants.controls; track $index; let i = $index) {
+        <div [formGroupName]="i" class="border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+          <div class="grid grid-cols-12 gap-4">
+            <mat-form-field class="col-span-12 sm:col-span-4">
+              <mat-label>SKU</mat-label>
+              <input matInput formControlName="sku" placeholder="Ej: LAM-001" />
+            </mat-form-field>
 
-              <mat-form-field class="col-span-6 sm:col-span-4">
-                <mat-label>Precio</mat-label>
-                <input matInput type="number" formControlName="price" placeholder="0.00" />
-              </mat-form-field>
+            <mat-form-field class="col-span-6 sm:col-span-4">
+              <mat-label>Precio</mat-label>
+              <input matInput type="number" formControlName="price" placeholder="0.00" />
+            </mat-form-field>
 
-              <mat-form-field class="col-span-6 sm:col-span-3">
-                <mat-label>Stock</mat-label>
-                <input matInput type="number" formControlName="stock" placeholder="0" />
-              </mat-form-field>
+            <mat-form-field class="col-span-6 sm:col-span-3">
+              <mat-label>Stock</mat-label>
+              <input matInput type="number" formControlName="stock" placeholder="0" />
+            </mat-form-field>
 
-              <div class="col-span-12 sm:col-span-1 flex justify-end items-start">
-                <button
-                  mat-icon-button
-                  color="warn"
-                  type="button"
-                  (click)="removeVariant($index)"
-                  class="hover:bg-red-50"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </div>
-
-            <!-- Atributos -->
-            <div class="mt-5 border-t pt-4">
-              <h4 class="font-medium mb-3 flex items-center gap-2 text-gray-700">
-                <mat-icon class="text-primary-400">tune</mat-icon>
-                Atributos
-              </h4>
-              <div formArrayName="attributes" class="space-y-2">
-                @for (attr of getAttributesArray($index).controls; track $index) {
-                  <div [formGroupName]="$index" class="grid grid-cols-12 gap-3">
-                    <mat-form-field class="col-span-5">
-                      <mat-label>Clave</mat-label>
-                      <input matInput formControlName="key" placeholder="Ej: Color" />
-                    </mat-form-field>
-
-                    <mat-form-field class="col-span-5">
-                      <mat-label>Valor</mat-label>
-                      <input matInput formControlName="value" placeholder="Ej: Azul" />
-                    </mat-form-field>
-
-                    <div class="col-span-2 flex justify-end items-center">
-                      <button
-                        mat-icon-button
-                        color="warn"
-                        type="button"
-                        (click)="removeAttribute($index, $index)"
-                        class="hover:bg-red-50"
-                      >
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </div>
-                  </div>
-                }
-              </div>
-
-              <button
-                mat-stroked-button
-                type="button"
-                (click)="addAttribute($index)"
-                class="w-full mt-4 border-dashed hover:bg-gray-50"
-              >
-                <mat-icon>add</mat-icon> Añadir atributo
+            <div class="col-span-12 sm:col-span-1 flex justify-end items-start">
+              <button mat-icon-button color="warn" type="button" (click)="removeVariant(i)" class="hover:bg-red-50">
+                <mat-icon>delete</mat-icon>
               </button>
             </div>
           </div>
+
+          <div class="mt-5 border-t pt-4">
+            <h4 class="font-medium mb-3 flex items-center gap-2 text-gray-700">
+              <mat-icon class="text-primary-400">tune</mat-icon>
+              Atributos
+            </h4>
+            <div formArrayName="attributes" class="space-y-2">
+              @for (attr of getAttributesArray(i).controls; track $index; let
+              j = $index) {
+              <div [formGroupName]="j" class="grid grid-cols-12 gap-3">
+                <mat-form-field class="col-span-5">
+                  <mat-label>Clave</mat-label>
+                  <input matInput formControlName="key" placeholder="Ej: Color" />
+                </mat-form-field>
+
+                <mat-form-field class="col-span-5">
+                  <mat-label>Valor</mat-label>
+                  <input matInput formControlName="value" placeholder="Ej: Azul" />
+                </mat-form-field>
+
+                <div class="col-span-2 flex justify-end items-center">
+                  <button mat-icon-button color="warn" type="button" (click)="removeAttribute(i, j)"
+                    class="hover:bg-red-50">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+            <button mat-stroked-button type="button" (click)="addAttribute(i)"
+              class="w-full mt-4 border-dashed hover:bg-gray-50">
+              <mat-icon>add</mat-icon> Añadir atributo
+            </button>
+          </div>
+
+          <div class="mt-5 border-t pt-4">
+            <h4 class="font-medium mb-3 flex items-center gap-2 text-gray-700">
+              <mat-icon class="text-primary-400">image</mat-icon>
+              Imágenes de la Variante
+            </h4>
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-4">
+              @for (imgUrl of getVariantImages(i).value; track $index; let
+              imgIndex = $index) {
+              <div class="relative group aspect-square">
+                <img [src]="imgUrl" alt="Previsualización de producto"
+                  class="w-full h-full object-cover rounded-md border" />
+                <button type="button" (click)="removeImage(i, imgIndex, imgUrl)"
+                  class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <mat-icon class="text-sm">close</mat-icon>
+                </button>
+              </div>
+              }
+              <button type="button" (click)="fileInput.click()"
+                class="w-full h-full border-2 border-dashed rounded-md flex flex-col items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-primary-500 transition-colors aspect-square">
+                <mat-icon>add_a_photo</mat-icon>
+                <span class="text-xs mt-1">Añadir</span>
+              </button>
+              <input hidden type="file" multiple #fileInput (change)="onFileSelected($event, i)"
+                accept="image/png, image/jpeg, image/webp" />
+            </div>
+          </div>
+        </div>
         }
       </div>
 
-      <button
-        mat-stroked-button
-        type="button"
-        (click)="addVariant()"
-        class="w-full mt-6"
-      >
+      <button mat-stroked-button type="button" (click)="addVariant()" class="w-full mt-6">
         <mat-icon>add</mat-icon> Añadir variante
       </button>
     </div>
@@ -157,21 +146,11 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="border-t mt-3 pt-4">
-  <button
-    mat-stroked-button
-    color="warn"
-    (click)="close()"
-    class="hover:bg-red-50 hover:border-red-300"
-  >
+  <button mat-stroked-button color="warn" (click)="close()" class="hover:bg-red-50 hover:border-red-300">
     Cancelar
   </button>
-  <button
-    mat-flat-button
-    color="primary"
-    (click)="onSave()"
-    [disabled]="form.invalid"
-    class="font-medium shadow-md hover:shadow-lg"
-  >
-    Guardar
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid"
+    class="font-medium shadow-md hover:shadow-lg">
+    <mat-icon>save</mat-icon> Guardar
   </button>
 </mat-dialog-actions>

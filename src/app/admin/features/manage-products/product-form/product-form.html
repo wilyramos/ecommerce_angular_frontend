@@ -6,12 +6,12 @@
 <mat-dialog-content class="max-h-[75vh] overflow-y-auto px-2 sm:px-6">
   <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 py-6">
     <!-- DATOS GENERALES -->
-    <mat-form-field class="col-span-2 w-full">
+    <mat-form-field class="col-span-2 w-full" appearance="outline">
       <mat-label>Nombre del producto</mat-label>
       <input matInput formControlName="name" placeholder="Ej: Zapatillas Speed 2.0 Knit Negras" />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field class="w-full" appearance="fill">
       <mat-label>Categoría</mat-label>
       <mat-select formControlName="category">
         @for (cat of data.categories; track cat._id) {
@@ -20,7 +20,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field class="w-full" appearance="outline">
       <mat-label>Marca</mat-label>
       <mat-select formControlName="brand">
         @for (brand of data.brands; track brand._id) {

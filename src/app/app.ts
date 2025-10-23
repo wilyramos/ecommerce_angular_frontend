@@ -5,8 +5,19 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('frontend');
+
+
+  isDark = signal(false);
+
+  toggleDarkMode() {
+    this.isDark.update(v => {
+      const newValue = !v;
+      document.documentElement.setAttribute('data-theme', newValue ? 'dark' : 'light');
+      return newValue;
+    });
+  }
 }

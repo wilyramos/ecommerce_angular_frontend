@@ -30,7 +30,7 @@ export interface Category {
 
   // attributes es un array de objetos CategoryAttribute. En tu esquema, tiene un default de [],
   // por lo que debe ser un array obligatorio.
-  attributes: CategoryAttribute[];
+  attributes?: CategoryAttribute[];
 
   // Campos de Timestamps de Mongoose
   createdAt: string; // ISO Date String

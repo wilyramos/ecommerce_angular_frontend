@@ -1,36 +1,134 @@
-<h1 mat-dialog-title class="text-xl font-semibold">
+<h1 mat-dialog-title class="text-2xl font-semibold text-gray-800 border-b pb-2">
   {{ isEditMode ? 'Editar Categoría' : 'Nueva Categoría' }}
 </h1>
 
-<mat-dialog-content>
-  <form [formGroup]="categoryForm" class="flex flex-col gap-4 py-4">
-    <!-- Nombre -->
-    <mat-form-field appearance="fill">
-      <mat-label>Nombre de la Categoría</mat-label>
-      <input matInput formControlName="name" />
-      <mat-error *ngIf="categoryForm.get('name')?.hasError('required')">
-        El nombre es obligatorio.
-      </mat-error>
-    </mat-form-field>
+<mat-dialog-content class="!pt-4 max-h-[70vh] overflow-y-auto">
+  <form [formGroup]="categoryForm" class="flex flex-col gap-6 py-4">
+    <!-- Información Básica -->
+    <div class="space-y-4">
+      <h2 class="text-xl font-medium ">Detalles Principales</h2>
 
-    <!-- Categoría padre -->
-    <mat-form-field appearance="fill">
-      <mat-label>Categoría Padre (opcional)</mat-label>
-      <mat-select formControlName="parentCategory">
-        <mat-option value="">Ninguna</mat-option>
-        <mat-option
-          *ngFor="let cat of categories"
-          [value]="cat._id"
-          [disabled]="isEditMode && cat._id === data.category?._id"
+      <!-- Nombre -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Nombre de la Categoría</mat-label>
+        <input matInput formControlName="name" placeholder="Ej: Camisetas de Hombre" />
+        <mat-error *ngIf="categoryForm.get('name')?.hasError('required')">
+          El nombre es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Descripción -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Descripción (Opcional)</mat-label>
+        <textarea matInput formControlName="description" rows="3" placeholder="Describe brevemente el tipo de productos que se encuentran aquí."></textarea>
+      </mat-form-field>
+
+      <!-- Categoría padre -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Categoría Padre (opcional)</mat-label>
+        <mat-select formControlName="parentCategory">
+          <mat-option [value]="null">Raíz (Ninguna)</mat-option>
+          <mat-option
+            *ngFor="let cat of categories"
+            [value]="cat._id"
+            [disabled]="isEditMode && cat._id === data.category?._id"
+          >
+            <!-- Puedes añadir un pequeño indicador de nivel si las categorías se hubieran aplanado con nivel -->
+            {{ cat.path }}
+          </mat-option>
+        </mat-select>
+        <mat-hint>Establece esta categoría debajo de otra existente.</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <!-- Atributos personalizados -->
+    <div class="border-t border-gray-300 pt-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-medium ">Atributos Personalizados</h2>
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          (click)="addAttribute()"
+          class="flex items-center"
         >
-          {{ cat.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+          <mat-icon>add_circle_fill</mat-icon>
+          Agregar Atributo
+        </button>
+      </div>
+      <p *ngIf="attributes.length === 0" class="text-sm text-neutral-500 italic">
+        Añade atributos como "Talla", "Color" o "Material" para filtrar productos.
+      </p>
+
+      <div formArrayName="attributes" class="flex flex-col gap-5">
+        @for (attr of attributes.controls; let i = $index; track attr) {
+          <div
+            [formGroupName]="i"
+            class="flex flex-col border border-indigo-200 p-4 rounded-lg bg-indigo-50 shadow-sm gap-3"
+          >
+            <div class="flex justify-between items-start">
+              <!-- Nombre del atributo -->
+              <mat-form-field appearance="fill" class="w-2/3">
+                <mat-label>Nombre del atributo</mat-label>
+                <input matInput formControlName="name" placeholder="Ej: Color o Talla" />
+                <mat-error *ngIf="attr.get('name')?.hasError('required')">
+                  El nombre del atributo es obligatorio.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Botón de eliminar atributo -->
+              <button
+                mat-icon-button
+                color="warn"
+                type="button"
+                (click)="removeAttribute(i)"
+                aria-label="Eliminar atributo"
+                title="Eliminar este atributo"
+              >
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </div>
+
+            <!-- Valores interactivos (chips) -->
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium text-gray-700">Valores predefinidos (Enter o coma)</label>
+
+              <!-- mat-chip-grid -->
+              <mat-chip-grid #chipGrid aria-label="Valores del atributo">
+
+                @for (valControl of getValuesArray(i).controls; let j = $index; track j) {
+                  <mat-chip-row
+                    (removed)="removeValue(i, j)"
+                    aria-label="Valor"
+                    class="!bg-indigo-500 !text-white"
+                  >
+                    {{ valControl.value }}
+                    <button matChipRemove aria-label="Eliminar valor">
+                      <mat-icon class="!text-white">cancel</mat-icon>
+                    </button>
+                  </mat-chip-row>
+                }
+
+                <!-- Input para agregar nuevos chips/valores -->
+                <input
+                  placeholder="Ej: Negro, Azul, Algodón, L, XL"
+                  [matChipInputFor]="chipGrid"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="addValue(i, $event)"
+                  aria-label="Agregar valor"
+                />
+              </mat-chip-grid>
+            </div>
+
+          </div>
+        }
+      </div>
+    </div>
   </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
+<mat-dialog-actions align="end" class="border-t pt-3 mt-4">
   <button mat-button [mat-dialog-close]="null">Cancelar</button>
   <button
     mat-flat-button
@@ -38,6 +136,6 @@
     (click)="onSave()"
     [disabled]="categoryForm.invalid"
   >
-    Guardar
+    <mat-icon>save</mat-icon> Guardar Categoría
   </button>
 </mat-dialog-actions>

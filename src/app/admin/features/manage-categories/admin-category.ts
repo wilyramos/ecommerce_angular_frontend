@@ -12,34 +12,34 @@ export class AdminCategoryService {
 
   constructor(private http: HttpClient) {}
 
-  /** Obtener lista plana */
+  /** Obtener lista plana de todas las categorías */
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}`);
   }
 
-  /** Obtener árbol jerárquico */
+  /** Obtener el árbol jerárquico completo de categorías */
   getCategoryTree(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}/tree`);
   }
 
-  /** Crear */
+  /** Crear una nueva categoría */
   createCategory(category: Partial<Category>): Observable<Category> {
     return this.http.post<Category>(`${this.apiUrl}`, category);
   }
 
-  /** Obtener por ID */
+  /** Obtener una categoría por su ID */
   getCategoryById(id: string): Observable<Category> {
     return this.http.get<Category>(`${this.apiUrl}/${id}`);
   }
 
-  /** Actualizar */
+  /** Actualizar una categoría existente */
   updateCategory(id: string, category: Partial<Category>): Observable<Category> {
     return this.http.put<Category>(`${this.apiUrl}/${id}`, category);
   }
 
-  /** Eliminar (con opción cascade) */
-  deleteCategory(id: string, cascade = false): Observable<void> {
-    const params = cascade ? '?cascade=true' : '';
-    return this.http.delete<void>(`${this.apiUrl}/${id}${params}`);
+  /** Eliminar una categoría por su ID */
+  deleteCategory(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
 }

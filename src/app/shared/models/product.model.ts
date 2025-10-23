@@ -16,7 +16,7 @@ export interface ProductVariant {
   images?: string[];
 }
 
-// --- MODELO BASE (ligero) ---
+// --- MODELO BASE (para crear/editar) ---
 export interface ProductBase {
   _id?: string;
   name: string;
@@ -24,17 +24,16 @@ export interface ProductBase {
   shortDescription?: string;
   longDescription?: string;
   variants: ProductVariant[];
-  isActive: boolean;
-  category: string;
-  brand?: string;
+  isActive?: boolean;
+  category: string;  // ID (string)
+  brand?: string;    // ID (string)
   tags?: string[];
   createdAt?: string;
   updatedAt?: string;
 }
 
-// --- MODELO EXPANDIDO (con objetos completos) ---
+// --- MODELO POPULADO (para mostrar en tablas o detalles) ---
 export interface PopulatedProduct extends Omit<ProductBase, 'category' | 'brand'> {
   category: Category;
   brand?: Brand;
-};
-
+}

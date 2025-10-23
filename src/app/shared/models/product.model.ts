@@ -1,4 +1,4 @@
-// File: frontend/src/app/shared/models/product.model.ts
+// frontend/src/app/shared/models/product.model.ts
 import { Category } from "./category.model";
 import { Brand } from "./brand.model";
 
@@ -13,10 +13,9 @@ export interface ProductVariant {
   salePrice?: number | null;
   stock: number;
   attributes: ProductAttribute[];
-  images?: string[];
+  images?: string[]; // URLs
 }
 
-// --- MODELO BASE (para crear/editar) ---
 export interface ProductBase {
   _id?: string;
   name: string;
@@ -32,7 +31,6 @@ export interface ProductBase {
   updatedAt?: string;
 }
 
-// --- MODELO POPULADO (para mostrar en tablas o detalles) ---
 export interface PopulatedProduct extends Omit<ProductBase, 'category' | 'brand'> {
   category: Category;
   brand?: Brand;

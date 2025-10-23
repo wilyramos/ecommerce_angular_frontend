@@ -7,10 +7,15 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-admin-layout',
+  standalone: true,
   imports: [RouterOutlet, Sidebar, MatListModule, MatIconModule, MatButtonModule],
   templateUrl: './admin-layout.html',
-  styleUrl: './admin-layout.css'
+  styleUrls: ['./admin-layout.css']
 })
 export class AdminLayout {
+  sidebarOpen = false;
 
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
 }

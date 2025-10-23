@@ -1,22 +1,25 @@
+// frontend/src/app/admin/services/admin-product.service.ts
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import type { ProductBase, PopulatedProduct } from '../../../shared/models/product.model';
 import { environment } from '../../../../environments/environment';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminProduct {
-
   private http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/products`;
 
-  constructor() { }
+  constructor() {}
 
   getProducts(): Observable<PopulatedProduct[]> {
     return this.http.get<PopulatedProduct[]>(this.apiUrl);
+  }
+
+  getProductById(id: string): Observable<PopulatedProduct> {
+    return this.http.get<PopulatedProduct>(`${this.apiUrl}/${id}`);
   }
 
   createProduct(product: ProductBase): Observable<ProductBase> {
@@ -33,6 +36,7 @@ export class AdminProduct {
     return this.http.delete<void>(url);
   }
 
+  // Retorna array de { fileName, url, key } o { urls: string[] } según backend
   uploadImages(files: File[]): Observable<any> {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));

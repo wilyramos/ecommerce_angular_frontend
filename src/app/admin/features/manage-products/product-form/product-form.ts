@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  FormBuilder,
-  FormGroup,
-  FormArray,
-  ReactiveFormsModule,
-  Validators,
-  FormControl,
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  ReactiveFormsModule,
+  Validators,
+  FormControl,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,67 +18,79 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { of, switchMap } from 'rxjs';
 
+// Modelos y Servicios
 import { ProductBase } from '../../../../shared/models/product.model';
 import { Category, CategoryAttribute } from '../../../../shared/models/category.model';
 import { Brand } from '../../../../shared/models/brand.model';
 import { AdminProduct } from '../admin-product';
 
+// --- NUEVOS MÓDULOS DE MATERIAL ---
+import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+
 @Component({
-  selector: 'app-product-form',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    MatInputModule,
-    MatDialogModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-  ],
-  templateUrl: './product-form.html',
+  selector: 'app-product-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatInputModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    MatCardModule,
+    MatExpansionModule,
+    MatDividerModule,
+    // --- MÓDULOS AÑADIDOS ---
+    MatTooltipModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: './product-form.html',
 })
 export class ProductFormComponent implements OnInit {
-  form!: FormGroup;
-  filesToUpload: Map<number, File[]> = new Map();
-  selectedCategory: Category | undefined;
+  form!: FormGroup;
+  filesToUpload: Map<number, File[]> = new Map();
+  selectedCategory: Category | undefined;
+  // --- NUEVA PROPIEDAD PARA ESTADO DE CARGA ---
+  isSaving = false;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA)
-    public data: { categories: Category[]; brands: Brand[] },
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<ProductFormComponent>,
-    private productService: AdminProduct,
-    private snackBar: MatSnackBar
-  ) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: { categories: Category[]; brands: Brand[] },
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<ProductFormComponent>,
+    private productService: AdminProduct,
+    private snackBar: MatSnackBar
+  ) {}
 
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      shortDescription: [''],
+      category: ['', Validators.required],
+      brand: [''],
+      isActive: [true],
+      variants: this.fb.array([]),
+    });
 
-  ngOnInit(): void {
-    this.form = this.fb.group({
-      name: ['', Validators.required],
-      shortDescription: [''],
-      category: ['', Validators.required],
-      brand: [''],
-      isActive: [true],
-      variants: this.fb.array([]),
-    });
+    this.addVariant();
 
-    // Agregar una variante inicial
-    this.addVariant();
-
-    // Escuchar cambios de categoría para actualizar atributos de todas las variantes
-    this.form.get('category')?.valueChanges.subscribe((categoryId) => {
-      this.selectedCategory = this.data.categories.find(cat => cat._id === categoryId);
-      if (this.selectedCategory) {
-        // Llamamos a la función unificada
-        this.updateAllVariantsAttributes(this.selectedCategory);
-      } else {
-        // Limpiar atributos si no hay categoría seleccionada
-        this.updateAllVariantsAttributes(undefined);
-      }
-    });
-  }
+    this.form.get('category')?.valueChanges.subscribe((categoryId) => {
+      this.selectedCategory = this.data.categories.find(
+        (cat) => cat._id === categoryId
+      );
+      this.updateAllVariantsAttributes(this.selectedCategory);
+    });
+  }
 
 
   // ========= Getters =========
@@ -127,10 +139,8 @@ export class ProductFormComponent implements OnInit {
     categoryAttributes.forEach(attr => {
       // Creamos un FormGroup para cada atributo
       const attrGroup = this.fb.group({
-        // Renombrado de 'name' a 'key'
         key: [{ value: attr.name, disabled: true }],
-        value: ['', Validators.required],
-        // Mantenemos 'possibleValues' para el template
+        value: [''],  // ahora es opcional
         possibleValues: [attr.values || []],
       });
       attributesArray.push(attrGroup);
@@ -241,18 +251,18 @@ export class ProductFormComponent implements OnInit {
       })
     ).subscribe({
       next: (result) => {
-        this.snackBar.open('✅ Producto creado correctamente.', 'Cerrar', {
+        this.snackBar.open('Producto creado correctamente.', 'Cerrar', {
           duration: 3000,
           panelClass: ['bg-green-600', 'text-white'],
         });
         this.dialogRef.close(true);
       },
       error: (err) => {
-        this.snackBar.open('❌ Error al crear producto. Revisa la consola.', 'Cerrar', {
+        this.snackBar.open('Error al crear producto. Revisa la consola.', 'Cerrar', {
           duration: 3000,
           panelClass: ['bg-red-600', 'text-white'],
         });
-        console.error('❌ Error al crear producto:', err);
+        console.error('Error al crear producto:', err);
       },
     });
   }

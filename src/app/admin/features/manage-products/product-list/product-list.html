@@ -1,7 +1,13 @@
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
-  <h1 class="text-xl sm:text-2xl font-semibold text-neutral-800 text-center sm:text-left">
+<!-- ENCABEZADO -->
+<div
+  class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3"
+>
+  <h1
+    class="text-xl sm:text-2xl font-semibold text-neutral-800 text-center sm:text-left"
+  >
     Gestionar Productos
   </h1>
+
   <button
     mat-flat-button
     color="primary"
@@ -13,74 +19,141 @@
   </button>
 </div>
 
+<!-- TABLA O LISTA RESPONSIVE -->
 @if (products().length > 0) {
-  <div class="overflow-x-auto">
+  <!-- 💻 Vista de escritorio -->
+  <div class="hidden md:block overflow-x-auto">
     <table class="min-w-full divide-y divide-neutral-200 text-sm">
       <thead class="bg-neutral-50">
         <tr>
-          <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Imagen</th>
-          <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Nombre</th>
-          <th class="hidden md:table-cell px-4 sm:px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Categoría</th>
-          <th class="hidden md:table-cell px-4 sm:px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Marca</th>
-          <th class="hidden sm:table-cell px-4 sm:px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Precio</th>
-          <th class="hidden sm:table-cell px-4 sm:px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Stock</th>
-          <th class="hidden sm:table-cell px-4 sm:px-6 py-3 text-center text-xs font-medium text-neutral-500 uppercase">Estado</th>
-          <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase">Acciones</th>
+          <th class="px-3 py-2 text-left font-semibold text-neutral-600">Imagen</th>
+          <th class="px-3 py-2 text-left font-semibold text-neutral-600">Nombre</th>
+          <th class="px-3 py-2 text-left font-semibold text-neutral-600">Categoría</th>
+          <th class="px-3 py-2 text-left font-semibold text-neutral-600">Marca</th>
+          <th class="px-3 py-2 text-left font-semibold text-neutral-600">Precio</th>
+          <th class="px-3 py-2 text-left font-semibold text-neutral-600">Stock</th>
+          <th class="px-3 py-2 text-left font-semibold text-neutral-600">Estado</th>
+          <th class="px-3 py-2 text-right font-semibold text-neutral-600">Acciones</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-neutral-200">
+
+      <tbody class="divide-y divide-neutral-100">
         @for (product of products(); track product._id) {
-          <tr class="hover:bg-neutral-50">
-            <td class="px-4 sm:px-6 py-3">
-              <img
-                [src]="product.variants[0]?.images?.[0] || 'https://placehold.co/40x40'"
-                alt="{{ product.name }}"
-                class="w-10 h-10 rounded-md object-cover mx-auto sm:mx-0"
-              />
-            </td>
-            <td class="px-4 sm:px-6 py-3 font-medium text-neutral-900 text-center sm:text-left">
-              {{ product.name }}
-            </td>
-            <td class="hidden md:table-cell px-4 sm:px-6 py-3 text-neutral-500">
-              {{ product.category.name }}
-            </td>
-            <td class="hidden md:table-cell px-4 sm:px-6 py-3 text-neutral-500">
-              {{ product.brand?.name || 'N/A' }}
-            </td>
-            <td class="hidden sm:table-cell px-4 sm:px-6 py-3 text-neutral-500">
-              ${{ product.variants[0]?.price | number }}
-            </td>
-            <td class="hidden sm:table-cell px-4 sm:px-6 py-3 text-neutral-500">
-              {{ product.variants[0]?.stock | number }}
-            </td>
-            <td class="hidden sm:table-cell px-4 sm:px-6 py-3 text-center">
-              @if(product.isActive) {
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Activo
-                </span>
-              } @else {
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                  Inactivo
-                </span>
-              }
-            </td>
-            <td class="px-4 sm:px-6 py-3 text-right">
-              <div class="flex justify-center sm:justify-end gap-2">
-                <button mat-icon-button (click)="openProductDialog(product)" aria-label="Editar">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" (click)="deleteProduct(product._id!)" aria-label="Eliminar">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </td>
-          </tr>
+        <tr class="hover:bg-neutral-50">
+          <td class="px-3 py-2">
+            <img
+              [src]="product.variants[0]?.images?.[0] || 'https://placehold.co/40x40'"
+              alt="{{ product.name }}"
+              class="w-10 h-10 rounded-md object-cover"
+            />
+          </td>
+          <td class="px-3 py-2 font-medium">{{ product.name }}</td>
+          <td class="px-3 py-2">{{ product.category?.name }}</td>
+          <td class="px-3 py-2">{{ product.brand?.name || 'N/A' }}</td>
+          <td class="px-3 py-2">${{ product.variants[0]?.price | number }}</td>
+          <td class="px-3 py-2">{{ product.variants[0]?.stock | number }}</td>
+          <td class="px-3 py-2">
+            @if (product.isActive) {
+            <span
+              class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs"
+              >Activo</span
+            >
+            } @else {
+            <span
+              class="bg-red-100 text-red-800 px-2 py-0.5 rounded-full text-xs"
+              >Inactivo</span
+            >
+            }
+          </td>
+
+          <td class="px-3 py-2 text-right">
+            <button
+              mat-icon-button
+              (click)="openProductDialog(product)"
+              aria-label="Editar"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteProduct(product._id!)"
+              aria-label="Eliminar"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
         }
       </tbody>
     </table>
   </div>
+
+  <!-- 📱 Vista móvil (cards) -->
+  <div class="md:hidden space-y-4">
+    @for (product of products(); track product._id) {
+    <div
+      class="border border-neutral-200 rounded-xl p-4 shadow-sm flex flex-col gap-3 hover:shadow-md transition-all duration-300"
+    >
+      <div class="flex items-center gap-4">
+        <img
+          [src]="product.variants[0]?.images?.[0] || 'https://placehold.co/60x60'"
+          alt="{{ product.name }}"
+          class="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+        />
+        <div>
+          <h3 class="font-semibold text-neutral-800">{{ product.name }}</h3>
+          <p class="text-sm text-neutral-500">
+            {{ product.category?.name }} • {{ product.brand?.name || 'N/A' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-y-1 text-sm text-neutral-700 mt-2">
+        <div><span class="font-medium">Precio:</span> ${{ product.variants[0]?.price | number }}</div>
+        <div><span class="font-medium">Stock:</span> {{ product.variants[0]?.stock | number }}</div>
+        <div class="col-span-2">
+          <span class="font-medium">Estado:</span>
+          @if (product.isActive) {
+          <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs"
+            >Activo</span
+          >
+          } @else {
+          <span class="bg-red-100 text-red-800 px-2 py-0.5 rounded-full text-xs"
+            >Inactivo</span
+          >
+          }
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-neutral-100">
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="openProductDialog(product)"
+          class="flex items-center gap-1"
+        >
+          <mat-icon class="text-base">edit</mat-icon>
+          Editar
+        </button>
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="deleteProduct(product._id!)"
+          class="flex items-center gap-1"
+        >
+          <mat-icon class="text-base">delete</mat-icon>
+          Eliminar
+        </button>
+      </div>
+    </div>
+    }
+  </div>
 } @else {
-  <div class="text-center p-8 border-2 border-dashed border-neutral-200 rounded-lg">
+  <!-- 🟨 Mensaje cuando no hay productos -->
+  <div
+    class="text-center p-8 border-2 border-dashed border-neutral-200 rounded-lg"
+  >
     <p class="text-neutral-500">No hay productos para mostrar.</p>
     <p class="text-sm text-neutral-400 mt-2">
       Crea tu primer producto haciendo clic en el botón "Nuevo Producto".

@@ -4,38 +4,8 @@
 
   <!-- MAIN AREA -->
   <div class="flex flex-col flex-grow">
-    <!-- HEADER -->
-    <header
-      class="h-16 bg-white border-b border-neutral-200 flex items-center justify-between px-8"
-    >
-      <div class="flex items-center space-x-4">
-        <!-- NOTIFICACIONES -->
-        <button
-          mat-icon-button
-          class="relative transition-transform hover:scale-110"
-          aria-label="Notificaciones"
-        >
-          <mat-icon fontSet="material-icons-outlined" class="text-neutral-700">notifications</mat-icon>
-          <span
-            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center"
-          >
-            3
-          </span>
-        </button>
-
-        <!-- PERFIL -->
-        <button
-          mat-icon-button
-          class="transition-transform hover:scale-110"
-          aria-label="Cuenta"
-        >
-          <mat-icon fontSet="material-icons-outlined" class="text-neutral-700">person_outline</mat-icon>
-        </button>
-      </div>
-    </header>
-
     <!-- CONTENIDO -->
-    <main class="flex-grow p-8 overflow-auto bg-white">
+    <main class="flex-grow p-2 overflow-auto bg-white">
       <router-outlet></router-outlet>
     </main>
   </div>

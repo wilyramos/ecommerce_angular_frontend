@@ -32,6 +32,8 @@ export class AdminProduct {
   private readonly apiUrl = `${environment.apiUrl}/products`;
 
   getProducts(filters: ProductFilterParams = {}): Observable<PaginatedResponse<PopulatedProduct>> {
+
+    console.log('Filtros enviados al servicio:', filters);
     let params = new HttpParams();
 
     // Convierte filtros a parámetros de URL
@@ -39,16 +41,16 @@ export class AdminProduct {
       if (value === null || value === undefined || value === '') return;
 
       if (Array.isArray(value)) {
-        value.forEach(v => params = params.append(key, v));
+        value.forEach(v => params = params.append(key, v.toString()));
       } else if (typeof value === 'object' && key === 'attributes') {
-        // Atributos tipo key-value
-        value.forEach((attr: any) => {
+        (value as any[]).forEach(attr => {
           params = params.append('attributes', JSON.stringify(attr));
         });
       } else {
-        params = params.set(key, value as any);
+        params = params.append(key, value.toString());
       }
     });
+
 
     return this.http.get<PaginatedResponse<PopulatedProduct>>(`${this.apiUrl}/search`, { params });
   }

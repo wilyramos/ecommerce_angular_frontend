@@ -1,26 +1,77 @@
-<form [formGroup]="filterForm" class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
-  <mat-form-field class="col-span-2">
-    <mat-label>Buscar producto</mat-label>
-    <input matInput placeholder="Ej. auriculares" formControlName="search" />
-  </mat-form-field>
+<form
+  [formGroup]="filterForm"
+  class="bg-white p-4 "
+>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+    <mat-form-field  class="col-span-2">
+      <mat-label>Buscar producto</mat-label>
+      <input
+        matInput
+        placeholder="Ej. auriculares"
+        formControlName="search"
+      />
+      <mat-icon matSuffix class="text-gray-400">
+        search
+      </mat-icon>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Ordenar por</mat-label>
-    <mat-select formControlName="sortBy">
-      <mat-option value="createdAt">Fecha</mat-option>
-      <mat-option value="price">Precio</mat-option>
-      <mat-option value="name">Nombre</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field >
+      <mat-label>Categoría</mat-label>
+      <mat-select formControlName="category">
+        <mat-option value="">Todas</mat-option>
+        <mat-option
+          *ngFor="let c of categories"
+          [value]="c._id"
+        >
+          {{ c.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Orden</mat-label>
-    <mat-select formControlName="sortOrder">
-      <mat-option value="desc">Descendente</mat-option>
-      <mat-option value="asc">Ascendente</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <!-- 🏭 Marca -->
+    <mat-form-field >
+      <mat-label>Marca</mat-label>
+      <mat-select formControlName="brand">
+        <mat-option value="">Todas</mat-option>
+        <mat-option
+          *ngFor="let b of brands"
+          [value]="b._id"
+        >
+          {{ b.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <button mat-flat-button color="primary" (click)="applyFilters()">Aplicar</button>
-  <button mat-button color="warn" (click)="clearFilters()">Limpiar</button>
+    <!-- 🧭 Ordenar por -->
+    <mat-form-field >
+      <mat-label>Ordenar por</mat-label>
+      <mat-select formControlName="sortBy">
+        <mat-option value="createdAt">Fecha</mat-option>
+        <mat-option value="price">Precio</mat-option>
+        <mat-option value="name">Nombre</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- ⬇️ Orden -->
+    <mat-form-field >
+      <mat-label>Orden</mat-label>
+      <mat-select formControlName="sortOrder">
+        <mat-option value="desc">Descendente</mat-option>
+        <mat-option value="asc">Ascendente</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- 🔄 Botón Limpiar -->
+    <div class="flex justify-end">
+      <button
+        mat-stroked-button
+        color="warn"
+        type="button"
+        (click)="clearFilters()"
+        class="!py-1 !px-3 text-xs rounded-lg border-gray-300 text-gray-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition"
+      >
+        Limpiar
+      </button>
+    </div>
+  </div>
 </form>

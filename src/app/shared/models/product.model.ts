@@ -13,7 +13,7 @@ export interface ProductVariant {
   salePrice?: number | null;
   stock: number;
   attributes: ProductAttribute[];
-  images?: string[]; // URLs
+  images?: string[];
 }
 
 export interface ProductBase {
@@ -23,6 +23,7 @@ export interface ProductBase {
   shortDescription?: string;
   longDescription?: string;
   variants: ProductVariant[];
+  filterAttributes?: ProductAttribute[];
   isActive?: boolean;
   category: string;  // ID (string)
   brand?: string;    // ID (string)

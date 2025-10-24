@@ -2,12 +2,6 @@
 <div
   class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3"
 >
-  <h1
-    class="text-xl sm:text-2xl font-semibold text-neutral-800 text-center sm:text-left"
-  >
-    Gestionar Productos
-  </h1>
-
   <button
     mat-flat-button
     color="primary"
@@ -48,7 +42,7 @@
             />
           </td>
           <td class="px-3 py-2 font-medium">{{ product.name }}</td>
-          <td class="px-3 py-2">{{ product.category?.name }}</td>
+          <td class="px-3 py-2">{{ product.category.name }}</td>
           <td class="px-3 py-2">{{ product.brand?.name || 'N/A' }}</td>
           <td class="px-3 py-2">${{ product.variants[0]?.price | number }}</td>
           <td class="px-3 py-2">{{ product.variants[0]?.stock | number }}</td>
@@ -104,7 +98,7 @@
         <div>
           <h3 class="font-semibold text-neutral-800">{{ product.name }}</h3>
           <p class="text-sm text-neutral-500">
-            {{ product.category?.name }} • {{ product.brand?.name || 'N/A' }}
+            {{ product.category.name }} • {{ product.brand?.name || 'N/A' }}
           </p>
         </div>
       </div>

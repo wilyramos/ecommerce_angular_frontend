@@ -1,18 +1,13 @@
 // File: frontend/src/app/shared/models/category.model.ts
 
-/**
- * Define la estructura de un atributo dentro de una categoría.
- * Mongoose añade automáticamente un _id a cada sub-documento en el array.
- */
 export interface CategoryAttribute {
   _id?: string; // Mongoose asigna un ObjectId a cada subdocumento en el array 'attributes'
   name: string;
   values: string[];
+  isVariant?: boolean;
+  isFilter?: boolean;
 }
 
-/**
- * Define la estructura completa de una Categoría tal como se recibe del backend.
- */
 export interface Category {
   _id: string;
   name: string;
@@ -27,9 +22,6 @@ export interface Category {
 
   // path es una cadena generada para la ruta completa (ej: "Moda > Hombre > Camisetas")
   path: string;
-
-  // attributes es un array de objetos CategoryAttribute. En tu esquema, tiene un default de [],
-  // por lo que debe ser un array obligatorio.
   attributes?: CategoryAttribute[];
 
   // Campos de Timestamps de Mongoose

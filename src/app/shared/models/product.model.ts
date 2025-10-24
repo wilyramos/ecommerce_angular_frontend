@@ -36,3 +36,10 @@ export interface PopulatedProduct extends Omit<ProductBase, 'category' | 'brand'
   category: Category;
   brand?: Brand;
 }
+
+export interface PaginatedProducts {
+  products: PopulatedProduct[];
+  total: number;
+  page: number;
+  limit: number;
+}

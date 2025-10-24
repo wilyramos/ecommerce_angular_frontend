@@ -1,228 +1,194 @@
-<h1 mat-dialog-title class="text-2xl font-semibold text-gray-800 border-b border-gray-100 pb-4 flex items-center gap-2">
-  <mat-icon class="text-primary-500">inventory</mat-icon>
-  {{ data ? 'Editar Producto' : 'Nuevo Producto' }}
+<h1 mat-dialog-title class="text-2xl font-semibold text-gray-800 border-b pb-4 flex items-center gap-3">
+  <mat-icon class="text-primary-500">inventory_2</mat-icon>
+  <span>{{ isEditMode ? 'Editar Producto' : 'Nuevo Producto' }}</span>
 </h1>
 
 <mat-progress-bar *ngIf="isSaving" mode="indeterminate" class="!absolute top-0 left-0 right-0"></mat-progress-bar>
 
-<mat-dialog-content class="max-h-[75vh] overflow-y-auto px-2 sm:px-6">
-  <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 py-6">
+<mat-dialog-content class="max-h-[75vh]">
+  <form [formGroup]="form" class="space-y-6 py-6">
 
-    <!-- 🟦 SECCIÓN 1: INFORMACIÓN BÁSICA -->
-    <div class="col-span-2">
-      <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-3">
-        <mat-icon class="text-primary-500">info</mat-icon>
-        Información básica
-      </h3>
-    </div>
-
-    <mat-form-field class="col-span-2 sm:col-span-2 w-full">
-      <mat-label>Nombre del producto</mat-label>
-      <input matInput formControlName="name" placeholder="Ej: Zapatillas Speed 2.0 Knit Negras" />
-      <mat-error *ngIf="form.get('name')?.hasError('required')">
-        El nombre del producto es obligatorio.
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field class="col-span-2 sm:col-span-1 w-full">
-      <mat-label>Categoría</mat-label>
-      <mat-select formControlName="category">
-        <mat-option *ngFor="let cat of data.categories" [value]="cat._id">{{ cat.name }}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="form.get('category')?.hasError('required')">
-        Debes seleccionar una categoría.
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field class="col-span-2 sm:col-span-1 w-full">
-      <mat-label>Marca</mat-label>
-      <mat-select formControlName="brand">
-        <mat-option *ngFor="let brand of data.brands" [value]="brand._id">{{ brand.name }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="col-span-2 w-full">
-      <mat-label>Descripción corta</mat-label>
-      <textarea matInput rows="3" formControlName="shortDescription"
-        placeholder="Ej: Zapatillas deportivas de punto elástico..."></textarea>
-    </mat-form-field>
-
-    <div class="col-span-2 flex items-center justify-between border-b border-gray-100 pb-4">
-      <mat-slide-toggle formControlName="isActive" color="primary">
-        Producto activo
-      </mat-slide-toggle>
-    </div>
-
-    <!-- Variants -->
-    <div class="col-span-2 mt-8">
-      <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
-        <mat-icon class="text-primary-500">inventory_2</mat-icon>
-        Variantes del producto
-      </h3>
-
-      <mat-accordion multi>
-        <div formArrayName="variants" class="space-y-3">
-          <mat-expansion-panel *ngFor="let variant of variants.controls; let i = index" [expanded]="true"
-            [formGroupName]="i"
-            class="!rounded-xl !shadow-sm sm:!shadow-md border border-gray-200 bg-slate-50 hover:!shadow-md transition-all duration-300">
-            <mat-expansion-panel-header>
-              <mat-panel-title class="font-semibold text-gray-700">
-                Variante {{ i + 1 }}
-              </mat-panel-title>
-              <mat-panel-description>
-                {{ variant.get('sku')?.value || 'Nuevo SKU' }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-
-            <div class="flex items-center justify-end mb-4 border-b border-gray-100 pb-2">
-              <button mat-icon-button color="warn" type="button" (click)="removeVariant(i)"
-                matTooltip="Eliminar variante" class="hover:bg-red-50">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-
-            <!-- Campos principales de la variante -->
-            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-              <mat-form-field class="col-span-12 sm:col-span-4 w-full">
-                <mat-label>SKU</mat-label>
-                <input matInput formControlName="sku" placeholder="Ej: BAL-SNK-001" />
-                <mat-error *ngIf="variant.get('sku')?.hasError('required')">El SKU es obligatorio.</mat-error>
-              </mat-form-field>
-
-              <mat-form-field class="col-span-12 sm:col-span-4 w-full">
-                <mat-label>Precio</mat-label>
-                <input matInput type="number" formControlName="price" placeholder="3890.00" />
-                <mat-error *ngIf="variant.get('price')?.hasError('required')">El precio es obligatorio.</mat-error>
-                <mat-error *ngIf="variant.get('price')?.hasError('min')">El precio no puede ser negativo.</mat-error>
-              </mat-form-field>
-
-              <mat-form-field class="col-span-12 sm:col-span-4 w-full">
-                <mat-label>Stock</mat-label>
-                <input matInput type="number" formControlName="stock" placeholder="10" />
-                <mat-error *ngIf="variant.get('stock')?.hasError('required')">El stock es obligatorio.</mat-error>
-              </mat-form-field>
-            </div>
-
-            <!-- Atributos -->
-            <div class="mt-6 pt-4 border-t border-gray-100">
-              <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                <mat-icon class="text-primary-400">tune</mat-icon>
-                Atributos de la variante
-              </h5>
-              <div formArrayName="attributes" class="space-y-2">
-                <div *ngFor="let attr of getAttributesArray(i).controls; let j = index" [formGroupName]="j"
-                  class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-                  <mat-form-field class="col-span-12 sm:col-span-5 w-full">
-                    <mat-label>Atributo</mat-label>
-                    <input matInput formControlName="key" />
-                  </mat-form-field>
-                  <mat-form-field class="col-span-12 sm:col-span-7 w-full">
-                    <mat-label>Valor</mat-label>
-                    <mat-select formControlName="value">
-                      <mat-option [value]="''">— Ninguno —</mat-option>
-                      <mat-option *ngFor="let option of attr.get('possibleValues')?.value" [value]="option">{{ option
-                        }}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-              </div>
-            </div>
-
-            <!-- Imágenes de la variante -->
-            <div class="mt-6 pt-4 border-t border-gray-100">
-              <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                <mat-icon class="text-primary-400">image</mat-icon>
-                Imágenes de la variante
-              </h5>
-
-              <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-4">
-                @for (imgUrl of getVariantImages(i).value; track $index; let imgIndex = $index) {
-                  <div class="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                    <img [src]="imgUrl" alt="Previsualización" class="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      (click)="removeImage(i, imgIndex, imgUrl)"
-                      class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <mat-icon class="text-xs">close</mat-icon>
-                    </button>
-                  </div>
-                }
-
-                <button
-                  type="button"
-                  (click)="fileInput.click()"
-                  class="aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-gray-400 hover:text-primary-500 hover:bg-gray-50 transition-colors"
-                >
-                  <mat-icon>add_a_photo</mat-icon>
-                  <span class="text-xs mt-1">Añadir</span>
-                </button>
-
-                <input
-                  hidden
-                  type="file"
-                  multiple
-                  #fileInput
-                  (change)="onFileSelected($event, i)"
-                  accept="image/png, image/jpeg, image/webp"
-                />
-              </div>
-            </div>
-
-
-          </mat-expansion-panel>
-        </div>
-      </mat-accordion>
-
-      <button mat-flat-button color="primary" type="button" (click)="addVariant()"
-        class="w-full sm:w-auto mt-4 font-medium shadow-sm hover:shadow-md flex items-center gap-2 justify-center">
-        <mat-icon>add</mat-icon> Añadir nueva variante
-      </button>
-    </div>
-    <!-- SECCIÓN 2: ATRIBUTOS DE FILTRADO -->
-
-    <div class="col-span-2 mt-8" *ngIf="filterAttributes.controls.length > 0">
-      <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
-        <mat-icon class="text-primary-500">filter_alt</mat-icon>
-        Atributos del producto
-      </h3>
-
-      <div formArrayName="filterAttributes" class="space-y-3">
-        <div *ngFor="let attr of filterAttributes.controls; let i = index" [formGroupName]="i"
-          class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center border p-3 rounded-lg bg-slate-50">
-          <mat-form-field class="col-span-12 sm:col-span-5 w-full">
-            <mat-label>Atributo</mat-label>
-            <input matInput formControlName="key" />
+    <mat-card appearance="outlined">
+      <mat-card-header class="!pb-4">
+        <mat-card-title>
+          <div class="flex items-center gap-2 text-lg">
+            <mat-icon class="text-primary-500">article</mat-icon>
+            Información Básica
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 pt-2">
+          <mat-form-field class="md:col-span-2">
+            <mat-label>Nombre del producto</mat-label>
+            <input matInput formControlName="name" placeholder="Ej: Zapatillas Speed 2.0 Knit Negras" />
+            <mat-error *ngIf="form.get('name')?.hasError('required')">
+              El nombre del producto es obligatorio.
+            </mat-error>
           </mat-form-field>
 
-          <mat-form-field class="col-span-12 sm:col-span-7 w-full">
-            <mat-label>Valor</mat-label>
-            <mat-select formControlName="value">
-              <mat-option [value]="''">— Ninguno —</mat-option>
-              <mat-option *ngFor="let option of attr.get('possibleValues')?.value" [value]="option">
-                {{ option }}
-              </mat-option>
+          <mat-form-field>
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="category">
+              <mat-option *ngFor="let cat of data.categories" [value]="cat._id">{{ cat.path }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('category')?.hasError('required')">
+              Debes seleccionar una categoría.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Marca</mat-label>
+            <mat-select formControlName="brand">
+              <mat-option *ngFor="let brand of data.brands" [value]="brand._id">{{ brand.name }}</mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
-      </div>
-    </div>
 
+          <mat-form-field class="md:col-span-2">
+            <mat-label>Descripción corta</mat-label>
+            <textarea matInput rows="3" formControlName="shortDescription" placeholder="Ej: Zapatillas deportivas de punto elástico..."></textarea>
+          </mat-form-field>
+
+          <div class="md:col-span-2 mt-2">
+            <mat-slide-toggle formControlName="isActive" color="primary">
+              Producto activo
+            </mat-slide-toggle>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined">
+      <mat-card-header class="!pb-4">
+        <mat-card-title>
+          <div class="flex items-center gap-2 text-lg">
+            <mat-icon class="text-primary-500">style</mat-icon>
+            Variantes del Producto
+          </div>
+        </mat-card-title>
+        <mat-card-subtitle>Define precios, SKUs, stock y atributos como color o talla.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-accordion multi>
+          <div formArrayName="variants" class="space-y-3">
+            <mat-expansion-panel *ngFor="let variant of variants.controls; let i = index" [expanded]="true" [formGroupName]="i" class="!rounded-lg !shadow-sm border border-gray-200 bg-slate-50 hover:!shadow-md transition-shadow">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="font-semibold text-gray-700">
+                  Variante {{ i + 1 }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ variant.get('sku')?.value || 'Nuevo SKU' }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <div class="flex justify-end border-b pb-2 mb-4">
+                <button mat-icon-button color="warn" type="button" (click)="removeVariant(i)" matTooltip="Eliminar variante" class="hover:bg-red-50">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                <mat-form-field class="sm:col-span-4">
+                  <mat-label>SKU</mat-label>
+                  <input matInput formControlName="sku" placeholder="Ej: ZAP-001-BL" />
+                  <mat-error *ngIf="variant.get('sku')?.hasError('required')">El SKU es obligatorio.</mat-error>
+                </mat-form-field>
+                <mat-form-field class="sm:col-span-4">
+                  <mat-label>Precio</mat-label>
+                  <input matInput type="number" formControlName="price" placeholder="199.99" />
+                  <mat-error *ngIf="variant.get('price')?.hasError('required')">El precio es obligatorio.</mat-error>
+                </mat-form-field>
+                <mat-form-field class="sm:col-span-4">
+                  <mat-label>Stock</mat-label>
+                  <input matInput type="number" formControlName="stock" placeholder="50" />
+                  <mat-error *ngIf="variant.get('stock')?.hasError('required')">El stock es obligatorio.</mat-error>
+                </mat-form-field>
+              </div>
+
+              <div *ngIf="getAttributesArray(i).controls.length > 0" class="mt-6 pt-4 border-t">
+                <h5 class="font-semibold text-gray-600 mb-3 text-sm">Atributos Específicos</h5>
+                <div formArrayName="attributes" class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                  <div *ngFor="let attr of getAttributesArray(i).controls; let j = index" [formGroupName]="j">
+                    <mat-form-field class="w-full">
+                      <mat-label>{{ attr.get('key')?.value }}</mat-label>
+                      <mat-select formControlName="value">
+                        <mat-option *ngFor="let option of attr.get('possibleValues')?.value" [value]="option">{{ option }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t">
+                 <h5 class="font-semibold text-gray-600 mb-3 text-sm">Imágenes</h5>
+                 <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                    @for (imgUrl of getVariantImages(i).value; track $index; let imgIndex = $index) {
+                      <div class="relative group aspect-square rounded-lg overflow-hidden border bg-gray-50">
+                        <img [src]="imgUrl" alt="Previsualización" class="w-full h-full object-cover" />
+                        <button type="button" (click)="removeImage(i, imgIndex, imgUrl)" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <mat-icon class="!text-sm">close</mat-icon>
+                        </button>
+                      </div>
+                    }
+                    <button type="button" (click)="fileInput.click()" class="aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-gray-400 hover:text-primary-500 hover:bg-primary-50 transition-colors">
+                      <mat-icon>add_a_photo</mat-icon>
+                      <span class="text-xs mt-1">Añadir</span>
+                    </button>
+                    <input hidden type="file" multiple #fileInput (change)="onFileSelected($event, i)" accept="image/png, image/jpeg, image/webp" />
+                 </div>
+              </div>
+
+            </mat-expansion-panel>
+          </div>
+        </mat-accordion>
+        <button mat-stroked-button color="primary" type="button" (click)="addVariant()" class="w-full sm:w-auto mt-4 flex items-center gap-2 justify-center">
+          <mat-icon>add</mat-icon>
+          Añadir nueva variante
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+
+    <mat-card appearance="outlined" *ngIf="filterAttributes.controls.length > 0">
+       <mat-card-header class="!pb-4">
+        <mat-card-title>
+          <div class="flex items-center gap-2 text-lg">
+            <mat-icon class="text-primary-500">filter_alt</mat-icon>
+            Atributos de Filtrado
+          </div>
+        </mat-card-title>
+        <mat-card-subtitle>Estos atributos se usarán para filtrar productos en la tienda.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div formArrayName="filterAttributes" class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+          <div *ngFor="let attr of filterAttributes.controls; let i = index" [formGroupName]="i">
+            <mat-form-field class="w-full">
+              <mat-label>{{ attr.get('key')?.value }}</mat-label>
+              <mat-select formControlName="value">
+                <mat-option [value]="''">— Ninguno —</mat-option>
+                <mat-option *ngFor="let option of attr.get('possibleValues')?.value" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
   </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end"
-  class="border-t border-gray-100 mt-4 pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 items-center">
+<mat-dialog-actions align="end" class="border-t pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
   <button mat-stroked-button (click)="close()" [disabled]="isSaving" class="w-full sm:w-auto">Cancelar</button>
-  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid || isSaving"
-    class="w-full sm:w-auto min-w-[100px] flex items-center justify-center gap-2">
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid || isSaving" class="w-full sm:w-auto min-w-[120px]">
     <ng-container *ngIf="isSaving; else saveText">
-      <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
-      Guardando...
+      <mat-progress-spinner mode="indeterminate" diameter="20" class="mr-2"></mat-progress-spinner>
+      <span>Guardando...</span>
     </ng-container>
     <ng-template #saveText>
-      <mat-icon>save</mat-icon> Guardar
+      <mat-icon>save</mat-icon>
+      <span>Guardar</span>
     </ng-template>
   </button>
 </mat-dialog-actions>

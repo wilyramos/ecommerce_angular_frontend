@@ -1,0 +1,26 @@
+<form [formGroup]="filterForm" class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+  <mat-form-field class="col-span-2">
+    <mat-label>Buscar producto</mat-label>
+    <input matInput placeholder="Ej. auriculares" formControlName="search" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Ordenar por</mat-label>
+    <mat-select formControlName="sortBy">
+      <mat-option value="createdAt">Fecha</mat-option>
+      <mat-option value="price">Precio</mat-option>
+      <mat-option value="name">Nombre</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Orden</mat-label>
+    <mat-select formControlName="sortOrder">
+      <mat-option value="desc">Descendente</mat-option>
+      <mat-option value="asc">Ascendente</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-flat-button color="primary" (click)="applyFilters()">Aplicar</button>
+  <button mat-button color="warn" (click)="clearFilters()">Limpiar</button>
+</form>

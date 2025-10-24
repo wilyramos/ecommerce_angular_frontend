@@ -1,43 +1,75 @@
-// frontend/src/app/admin/services/admin-product.service.ts
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import type { ProductBase, PopulatedProduct } from '../../../shared/models/product.model';
+import type { PopulatedProduct } from '../../../shared/models/product.model';
 import { environment } from '../../../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface ProductFilterParams {
+  page?: number;
+  limit?: number;
+  category?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  tags?: string[];
+  attributes?: { key: string; value: string }[];
+  search?: string;
+  isActive?: boolean;
+  sortBy?: 'price' | 'name' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+@Injectable({ providedIn: 'root' })
 export class AdminProduct {
   private http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/products`;
 
-  constructor() {}
+  getProducts(filters: ProductFilterParams = {}): Observable<PaginatedResponse<PopulatedProduct>> {
+    let params = new HttpParams();
 
-  getProducts(): Observable<PopulatedProduct[]> {
-    return this.http.get<PopulatedProduct[]>(this.apiUrl);
+    // Convierte filtros a parámetros de URL
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value === null || value === undefined || value === '') return;
+
+      if (Array.isArray(value)) {
+        value.forEach(v => params = params.append(key, v));
+      } else if (typeof value === 'object' && key === 'attributes') {
+        // Atributos tipo key-value
+        value.forEach((attr: any) => {
+          params = params.append('attributes', JSON.stringify(attr));
+        });
+      } else {
+        params = params.set(key, value as any);
+      }
+    });
+
+    return this.http.get<PaginatedResponse<PopulatedProduct>>(`${this.apiUrl}/search`, { params });
   }
 
   getProductById(id: string): Observable<PopulatedProduct> {
     return this.http.get<PopulatedProduct>(`${this.apiUrl}/${id}`);
   }
 
-  createProduct(product: ProductBase): Observable<ProductBase> {
-    return this.http.post<ProductBase>(this.apiUrl, product);
+  createProduct(product: any) {
+    return this.http.post(`${this.apiUrl}`, product);
   }
 
-  updateProduct(productId: string, product: ProductBase): Observable<ProductBase> {
-    const url = `${this.apiUrl}/${productId}`;
-    return this.http.patch<ProductBase>(url, product);
+  updateProduct(productId: string, product: any) {
+    return this.http.patch(`${this.apiUrl}/${productId}`, product);
   }
 
-  deleteProduct(productId: string): Observable<void> {
-    const url = `${this.apiUrl}/${productId}`;
-    return this.http.delete<void>(url);
+  deleteProduct(productId: string) {
+    return this.http.delete(`${this.apiUrl}/${productId}`);
   }
 
-  // Retorna array de { fileName, url, key } o { urls: string[] } según backend
-  uploadImages(files: File[]): Observable<any> {
+  uploadImages(files: File[]) {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
     return this.http.post(this.apiUrl + '/upload-images', formData);

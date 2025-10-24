@@ -77,6 +77,7 @@ export class ProductFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('Datos recibidos en ProductFormComponent:', this.data);
     this.form = this.fb.group({
       name: ['', Validators.required],
       shortDescription: [''],

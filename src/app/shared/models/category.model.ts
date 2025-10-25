@@ -23,7 +23,7 @@ export interface Category {
   // path es una cadena generada para la ruta completa (ej: "Moda > Hombre > Camisetas")
   path: string;
   attributes?: CategoryAttribute[];
-
+  image?: string;
   // Campos de Timestamps de Mongoose
   createdAt: string; // ISO Date String
   updatedAt: string; // ISO Date String

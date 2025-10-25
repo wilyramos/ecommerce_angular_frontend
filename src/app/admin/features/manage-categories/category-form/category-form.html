@@ -17,35 +17,48 @@
 
       <mat-form-field appearance="fill" class="w-full">
         <mat-label>Descripción (Opcional)</mat-label>
-        <textarea matInput formControlName="description" rows="3" placeholder="Describe brevemente el tipo de productos que se encuentran aquí."></textarea>
+        <textarea matInput formControlName="description" rows="3"
+          placeholder="Describe brevemente el tipo de productos que se encuentran aquí."></textarea>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="w-full">
         <mat-label>Categoría Padre (opcional)</mat-label>
         <mat-select formControlName="parentCategory">
           <mat-option [value]="null">Raíz (Ninguna)</mat-option>
-          <mat-option
-            *ngFor="let cat of categories"
-            [value]="cat._id"
-            [disabled]="isEditMode && cat._id === data.category?._id"
-          >
+          <mat-option *ngFor="let cat of categories" [value]="cat._id"
+            [disabled]="isEditMode && cat._id === data.category?._id">
             {{ cat.path }}
           </mat-option>
         </mat-select>
         <mat-hint>Establece esta categoría debajo de otra existente.</mat-hint>
       </mat-form-field>
+
+      <div class="mt-6 pt-4 border-t">
+        <h5 class="font-semibold text-gray-600 mb-3 text-sm">Imágenes</h5>
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+          <div class="relative group aspect-square rounded-lg overflow-hidden  bg-gray-50">
+            <img [src]="previewImage" alt="Previsualización" class="w-full h-full object-cover" />
+            <button type="button" (click)="removeImage()"
+              class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <mat-icon class="!text-sm">close</mat-icon>
+            </button>
+          </div>
+
+          <button type="button" (click)="fileInput.click()"
+            class="aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-gray-400 hover:text-primary-500 hover:bg-primary-50 transition-colors">
+            <mat-icon>add_a_photo</mat-icon>
+            <span class="text-xs mt-1">Añadir</span>
+          </button>
+          <input hidden type="file" multiple #fileInput (change)="onImageSelected($event)"
+            accept="image/png, image/jpeg, image/webp" />
+        </div>
+      </div>
     </div>
 
     <div class="border-t border-gray-300 pt-6 space-y-4">
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-medium ">Atributos Personalizados</h2>
-        <button
-          mat-flat-button
-          color="primary"
-          type="button"
-          (click)="addAttribute()"
-          class="flex items-center"
-        >
+        <button mat-flat-button color="primary" type="button" (click)="addAttribute()" class="flex items-center">
           <mat-icon>add_circle_fill</mat-icon>
           Agregar Atributo
         </button>
@@ -56,77 +69,58 @@
 
       <div formArrayName="attributes" class="flex flex-col gap-5">
         @for (attr of attributes.controls; let i = $index; track attr) {
-          <div
-            [formGroupName]="i"
-            class="flex flex-col border border-indigo-200 p-4 rounded-lg bg-indigo-50 shadow-sm gap-3"
-          >
-            <div class="flex justify-between items-start">
-              <mat-form-field appearance="fill" class="w-2/3">
-                <mat-label>Nombre del atributo</mat-label>
-                <input matInput formControlName="name" placeholder="Ej: Color o Talla" />
-                <mat-error *ngIf="attr.get('name')?.hasError('required')">
-                  El nombre del atributo es obligatorio.
-                </mat-error>
-              </mat-form-field>
+        <div [formGroupName]="i"
+          class="flex flex-col border border-indigo-200 p-4 rounded-lg bg-indigo-50 shadow-sm gap-3">
+          <div class="flex justify-between items-start">
+            <mat-form-field appearance="fill" class="w-2/3">
+              <mat-label>Nombre del atributo</mat-label>
+              <input matInput formControlName="name" placeholder="Ej: Color o Talla" />
+              <mat-error *ngIf="attr.get('name')?.hasError('required')">
+                El nombre del atributo es obligatorio.
+              </mat-error>
+            </mat-form-field>
 
-              <button
-                mat-icon-button
-                color="warn"
-                type="button"
-                (click)="removeAttribute(i)"
-                aria-label="Eliminar atributo"
-                title="Eliminar este atributo"
-              >
-                <mat-icon>delete_forever</mat-icon>
-              </button>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-x-6 gap-y-2">
-              <mat-checkbox formControlName="isVariant">
-                Es una variante de producto
-                <mat-icon
-                  matTooltip="Marcar si este atributo define una variante única de un producto (ej: Talla, Color). Afecta al stock y SKU."
-                  class="text-sm text-gray-500 align-middle ml-1"
-                >help_outline</mat-icon>
-              </mat-checkbox>
-              <mat-checkbox formControlName="isFilter">
-                Usar como filtro en la tienda
-                 <mat-icon
-                  matTooltip="Marcar si los clientes podrán usar este atributo para filtrar productos en la página de la categoría (ej: Marca, Material)."
-                  class="text-sm text-gray-500 align-middle ml-1"
-                >help_outline</mat-icon>
-              </mat-checkbox>
-            </div>
-            <div class="flex flex-col gap-2 rounded border border-indigo-300 p-3 bg-white">
-              <label class="text-sm font-medium text-gray-700">Valores predefinidos (Enter o coma)</label>
-
-              <mat-chip-grid #chipGrid aria-label="Valores del atributo">
-
-                @for (valControl of getValuesArray(i).controls; let j = $index; track j) {
-                  <mat-chip-row
-                    (removed)="removeValue(i, j)"
-                    aria-label="Valor"
-                    class="!bg-indigo-500 !text-white"
-                  >
-                    {{ valControl.value }}
-                    <button matChipRemove aria-label="Eliminar valor">
-                      <mat-icon class="!text-white">cancel</mat-icon>
-                    </button>
-                  </mat-chip-row>
-                }
-
-                <input
-                  placeholder="Ej: Negro, Azul, Algodón, L, XL"
-                  [matChipInputFor]="chipGrid"
-                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                  [matChipInputAddOnBlur]="true"
-                  (matChipInputTokenEnd)="addValue(i, $event)"
-                  aria-label="Agregar valor"
-                />
-              </mat-chip-grid>
-            </div>
-
+            <button mat-icon-button color="warn" type="button" (click)="removeAttribute(i)"
+              aria-label="Eliminar atributo" title="Eliminar este atributo">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
           </div>
+
+          <div class="flex flex-col sm:flex-row gap-x-6 gap-y-2">
+            <mat-checkbox formControlName="isVariant">
+              Es una variante de producto
+              <mat-icon
+                matTooltip="Marcar si este atributo define una variante única de un producto (ej: Talla, Color). Afecta al stock y SKU."
+                class="text-sm text-gray-500 align-middle ml-1">help_outline</mat-icon>
+            </mat-checkbox>
+            <mat-checkbox formControlName="isFilter">
+              Usar como filtro en la tienda
+              <mat-icon
+                matTooltip="Marcar si los clientes podrán usar este atributo para filtrar productos en la página de la categoría (ej: Marca, Material)."
+                class="text-sm text-gray-500 align-middle ml-1">help_outline</mat-icon>
+            </mat-checkbox>
+          </div>
+          <div class="flex flex-col gap-2 rounded border border-indigo-300 p-3 bg-white">
+            <label class="text-sm font-medium text-gray-700">Valores predefinidos (Enter o coma)</label>
+
+            <mat-chip-grid #chipGrid aria-label="Valores del atributo">
+
+              @for (valControl of getValuesArray(i).controls; let j = $index; track j) {
+              <mat-chip-row (removed)="removeValue(i, j)" aria-label="Valor" class="!bg-indigo-500 !text-white">
+                {{ valControl.value }}
+                <button matChipRemove aria-label="Eliminar valor">
+                  <mat-icon class="!text-white">cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+              }
+
+              <input placeholder="Ej: Negro, Azul, Algodón, L, XL" [matChipInputFor]="chipGrid"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="addValue(i, $event)" aria-label="Agregar valor" />
+            </mat-chip-grid>
+          </div>
+
+        </div>
         }
       </div>
     </div>
@@ -135,12 +129,7 @@
 
 <mat-dialog-actions align="end" class="border-t pt-3 mt-4">
   <button mat-button [mat-dialog-close]="null">Cancelar</button>
-  <button
-    mat-flat-button
-    color="primary"
-    (click)="onSave()"
-    [disabled]="categoryForm.invalid"
-  >
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="categoryForm.invalid">
     <mat-icon>save</mat-icon> Guardar Categoría
   </button>
 </mat-dialog-actions>

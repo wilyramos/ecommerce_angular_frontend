@@ -4,6 +4,7 @@ import { Category } from '../../../shared/models/category.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -42,4 +43,10 @@ export class AdminCategoryService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
+  /** Subir imagen para una categoría */
+  uploadCategoryImage(files: File[]) {
+    const formData = new FormData();
+    files.forEach(file => formData.append('file', file));
+    return this.http.post<any>(`${this.apiUrl}/upload-image`, formData);
+  }
 }

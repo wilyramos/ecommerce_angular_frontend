@@ -1,0 +1,36 @@
+<div class="min-h-screen py-10 px-4 max-w-6xl mx-auto">
+
+  @if (isLoading) {
+    <div class="text-center py-20 text-gray-500">
+      Cargando productos...
+    </div>
+  } @else {
+
+    @if (error) {
+      <div class="text-center text-red-600 py-10">
+        {{ error }}
+      </div>
+    } @else {
+
+      @if (products.length > 0) {
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          @for (product of products; track product._id) {
+            <app-product-card [product]="product" />
+          }
+        </div>
+      } @else {
+        <div class="text-center text-gray-400 py-20">
+          No hay productos disponibles.
+        </div>
+      }
+    }
+  }
+
+  <div class="flex justify-center mt-10">
+    <app-paginator
+      [page]="page"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)">
+    </app-paginator>
+  </div>
+</div>

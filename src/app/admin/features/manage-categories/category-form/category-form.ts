@@ -57,6 +57,8 @@ export class CategoryFormComponent implements OnInit {
 
   isEditMode = false;
   categories: Category[] = [];
+  imageFile: File | null = null;
+  previewImage: string | null = null;
 
   categoryForm = this.fb.group({
     name: ['', Validators.required],
@@ -70,7 +72,7 @@ export class CategoryFormComponent implements OnInit {
     this.isEditMode = !!this.data?.category;
 
     if (this.data.allCategories) {
-        this.categories = this.data.allCategories;
+      this.categories = this.data.allCategories;
     }
 
     if (this.isEditMode && this.data.category) {
@@ -80,7 +82,7 @@ export class CategoryFormComponent implements OnInit {
 
   ngOnInit() {
     if (!this.data.allCategories) {
-        this.loadCategories();
+      this.loadCategories();
     }
   }
 
@@ -132,19 +134,33 @@ export class CategoryFormComponent implements OnInit {
     this.attributes.removeAt(index);
   }
 
-  onSave(): void {
+  async onSave(): Promise<void> {
     if (this.categoryForm.invalid) return;
+    let imageUrl: string | undefined;
+
+
+    if (this.imageFile) {
+      try {
+        const uploadResult = await this.categoryService
+          .uploadCategoryImage([this.imageFile])
+          .toPromise();
+
+        imageUrl = uploadResult[0].url; // obtenemos la URL del primer archivo
+      } catch (error) {
+        console.error('Error al subir la imagen:', error);
+        return;
+      }
+    }
 
     const { name, slug, description, parentCategory, attributes } = this.categoryForm.value;
 
-    // --- (3) ACTUALIZACIÓN DEL PAYLOAD ---
     const formattedAttributes: CategoryAttribute[] = (attributes || [])
-        .map(attr => ({
-          name: attr.name as string,
-          values: (attr.values as string[]).filter(v => !!v),
-          isVariant: attr.isVariant as boolean, // Añadido
-          isFilter: attr.isFilter as boolean,   // Añadido
-        }));
+      .map(attr => ({
+        name: attr.name as string,
+        values: (attr.values as string[]).filter(v => !!v),
+        isVariant: attr.isVariant as boolean, // Añadido
+        isFilter: attr.isFilter as boolean,   // Añadido
+      }));
 
     const payload: Partial<Category> = {
       name: name!,
@@ -152,10 +168,11 @@ export class CategoryFormComponent implements OnInit {
       description: description || undefined,
       parentCategory: parentCategory || null,
       attributes: formattedAttributes,
+      image: imageUrl,
     };
 
     if (this.isEditMode && !payload.slug) {
-        delete payload.slug;
+      delete payload.slug;
     }
 
     const operation = this.isEditMode
@@ -189,5 +206,22 @@ export class CategoryFormComponent implements OnInit {
 
   getValuesArray(attrIndex: number): FormArray<FormControl<string | null>> {
     return this.attributes.at(attrIndex).get('values') as FormArray<FormControl<string | null>>;
+  }
+
+  onImageSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.imageFile = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImage = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage() {
+    this.imageFile = null;
+    this.previewImage = null;
   }
 }

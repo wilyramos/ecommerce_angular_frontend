@@ -48,12 +48,9 @@ export class CategoryListComponent implements OnInit {
         },
         error: () => this.showError('Error al cargar las categorías'),
       });
+    console.log('Categories loaded', this.flatCategories());
   }
 
-  /**
-   * Convierte el árbol jerárquico en una lista plana con niveles
-   * para facilitar la visualización y la indentación.
-   */
   private buildFlatList(categories: Category[], level = 0): CategoryWithLevel[] {
     const result: CategoryWithLevel[] = [];
     for (const cat of categories) {

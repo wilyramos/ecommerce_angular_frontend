@@ -18,4 +18,8 @@ export class Category {
     console.log('Fetching categories from:', this.apiUrl);
     return this.http.get<CategoryModel[]>(this.apiUrl);
   }
+
+  getTreeCategories() {
+    return this.http.get<CategoryModel[]>(`${this.apiUrl}/tree`);
+  }
 }

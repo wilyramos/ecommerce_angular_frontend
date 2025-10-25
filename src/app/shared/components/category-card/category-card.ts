@@ -9,7 +9,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './category-card.css'
 })
 export class CategoryCard {
-
   @Input({ required: true }) category!: Category;
 
+  onImageError(event: Event) {
+    (event.target as HTMLImageElement).src = 'assets/images/placeholder-category.png';
+  }
 }

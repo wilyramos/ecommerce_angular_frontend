@@ -81,9 +81,13 @@ export class CategoryFormComponent implements OnInit {
   }
 
   ngOnInit() {
+
     if (!this.data.allCategories) {
       this.loadCategories();
+      console.log('Cargando categorías para el formulario...', this.categories);
     }
+    console.log('Categorías disponibles:', this.categories);
+
   }
 
   private initFormForEdit(cat: Category): void {
@@ -95,6 +99,10 @@ export class CategoryFormComponent implements OnInit {
       description: cat.description,
       parentCategory: parentId,
     });
+
+    if (cat.image) {
+      this.previewImage = cat.image;
+    }
 
     if (cat.attributes && cat.attributes.length > 0) {
       cat.attributes.forEach(attr => this.addAttribute(attr));
@@ -138,7 +146,6 @@ export class CategoryFormComponent implements OnInit {
     if (this.categoryForm.invalid) return;
     let imageUrl: string | undefined;
 
-
     if (this.imageFile) {
       try {
         const uploadResult = await this.categoryService
@@ -170,6 +177,7 @@ export class CategoryFormComponent implements OnInit {
       attributes: formattedAttributes,
       image: imageUrl,
     };
+    console.log('Payload de categoría:', payload);
 
     if (this.isEditMode && !payload.slug) {
       delete payload.slug;

@@ -1,4 +1,46 @@
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<div class="min-h-screen py-10 px-4 max-w-6xl mx-auto">
+  @if (isLoading) {
+    <div class="text-center py-20 text-gray-500">
+      Cargando productos...
+    </div>
+  } @else {
 
+    @if (error) {
+      <div class="text-center text-red-600 py-10">
+        {{ error }}
+      </div>
+    } @else {
 
+      <div class="flex flex-row">
+        <app-filter-sidebar
+          [filters]="filters"
+          (filtersChange)="onFiltersChange($event)">
+        </app-filter-sidebar>
+      </div>
+
+      @if (products.length > 0) {
+        <h2 class="text-lg  text-gray-900 mb-8 capitalize">
+          Productos en {{ slug }}
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          @for (product of products; track product._id) {
+            <app-product-card [product]="product" />
+          }
+        </div>
+      } @else {
+        <div class="text-center text-gray-400 py-20">
+          No hay productos en esta categoría.
+        </div>
+      }
+    }
+  }
+
+  <div class="flex justify-center mt-10" *ngIf="totalPages > 1">
+    <app-paginator
+      [page]="page"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)">
+    </app-paginator>
+  </div>
 </div>

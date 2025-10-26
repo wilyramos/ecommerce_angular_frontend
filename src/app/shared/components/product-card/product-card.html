@@ -1,44 +1,24 @@
-<div
-  class="relative aspect-[4/5] bg-[#f6f6f6] overflow-hidden group"
-  [routerLink]="productUrl"
->
+<div class="relative aspect-[4/5] bg-[#f6f6f6] group" [routerLink]="productUrl">
 
   @if (mainImage; as img) {
-    @if (secondaryImage; as secImg) {
-      <img
-        [src]="img"
-        [alt]="product.name"
-        class="w-full h-full object-cover transition-all duration-700 group-hover:opacity-0"
-        loading="lazy"
-      />
-      <img
-        [src]="secImg"
-        [alt]="product.name"
-        class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100"
-        loading="lazy"
-      />
-    } @else {
-      <img
-        [src]="img"
-        [alt]="product.name"
-        class="w-full h-full object-cover"
-        loading="lazy"
-      />
-    }
+  @if (secondaryImage; as secImg) {
+  <img [src]="img" [alt]="product.name" class="w-full h-full object-cover group-hover:opacity-0" loading="lazy" />
+  <img [src]="secImg" [alt]="product.name"
+    class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100" loading="lazy" />
   } @else {
-    <div
-      class="flex items-center justify-center w-full h-full text-gray-400 text-sm bg-[#f6f6f6]"
-    >
-      Sin imagen
-    </div>
+  <img [src]="img" [alt]="product.name" class="w-full h-full object-cover" loading="lazy" />
+  }
+  } @else {
+  <div class="flex items-center justify-center w-full h-full text-gray-400 text-sm bg-[#f6f6f6]">
+    Sin imagen
+  </div>
   }
 
   @if (hasDiscount) {
-    <div
-      class="absolute top-2 left-2 bg-black/80 text-white text-[10px] font-medium tracking-wide px-2 py-0.5 rounded-sm uppercase"
-    >
-      -{{ discountPercent }}%
-    </div>
+  <div
+    class="absolute top-2 left-2 bg-black/80 text-white text-[10px] font-medium tracking-wide px-2 py-0.5 rounded-sm uppercase">
+    -{{ discountPercent }}%
+  </div>
   }
 
 </div>
@@ -46,19 +26,19 @@
 <div class="mt-3 text-left">
 
   @if (product.brand; as brand) {
-    <p class="text-[11px] text-black font-bold uppercase tracking-[0.15em]">
-      {{ brand.name }}
-    </p>
+  <p class="text-sm text-black font-semibold tracking-wide">
+    {{ brand.name }}
+  </p>
   }
 
-  <h3 class="text-sm font-light mt-1 leading-snug">
-    <a [routerLink]="productUrl" class="text-neutral-900">
+  <h3 class="text-sm mt-1 ">
+    <a [routerLink]="productUrl" class="text-neutral-700">
       {{ product.name }}
     </a>
   </h3>
 
   <div class="mt-1.5">
-    <p class="text-sm text-gray-900">
+    <p class="text-sm text-neutral-700">
       S/ {{ variant.price | number: '1.0-0' }}
     </p>
   </div>

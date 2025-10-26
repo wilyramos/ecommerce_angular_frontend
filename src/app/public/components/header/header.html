@@ -1,44 +1,59 @@
-<header class="sticky top-0 z-50 bg-white">
-  <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between relative">
-    <!-- IZQUIERDA: MENÚ -->
-    <div class="w-1/3 flex items-center">
-      <button mat-icon-button aria-label="Menú de navegación">
-        <mat-icon fontSet="material-icons-outlined" class="text-black">menu</mat-icon>
-      </button>
-    </div>
+<header class="fixed top-0 left-0 right-0 z-50  px-15 bg-white">
+  <!-- PRIMER HEADER: LOGO + ICONOS -->
+  <div class="">
+    <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between relative">
+      <!-- IZQUIERDA: MENÚ -->
+      <div class="w-1/3 flex items-center">
+        <button mat-icon-button aria-label="Menú de navegación">
+          <mat-icon fontSet="material-icons-outlined" class="text-black">menu</mat-icon>
+        </button>
+      </div>
 
-    <!-- CENTRO: LOGO -->
-    <div class="absolute left-1/2 transform -translate-x-1/2">
-      <a routerLink="/" class="text-2xl font-bold tracking-wide text-gray-900 select-none">
-        BALENCIAGA
-      </a>
-    </div>
+      <!-- CENTRO: LOGO -->
+      <div class="absolute left-1/2 transform -translate-x-1/2">
+        <a routerLink="/" class="text-2xl font-bold tracking-wide text-gray-900 select-none">
+          BALENCIAGA
+        </a>
+      </div>
 
-    <!-- DERECHA: ICONOS -->
-    <div class="w-1/3 flex items-center justify-end space-x-2">
-      <!-- BUSCAR -->
-      <button mat-icon-button aria-label="Buscar">
-        <mat-icon fontSet="material-icons-outlined" class="text-black">search</mat-icon>
-      </button>
+      <!-- DERECHA: ICONOS -->
+      <div class="w-1/3 flex items-center justify-end space-x-2">
+        <button mat-icon-button aria-label="Buscar">
+          <mat-icon fontSet="material-icons-outlined" class="text-black">search</mat-icon>
+        </button>
 
-      <!-- FAVORITOS -->
-      <button mat-icon-button aria-label="Favoritos">
-        <mat-icon fontSet="material-icons-outlined" class="text-2xl text-indigo-600 font-bold"
-          [matBadge]="favoritesItemCount" aria-hidden="false">favorite_border</mat-icon>
-      </button>
+        <button mat-icon-button aria-label="Favoritos">
+          <mat-icon fontSet="material-icons-outlined" class="text-2xl text-indigo-600 font-bold"
+            [matBadge]="favoritesItemCount" aria-hidden="false">favorite_border</mat-icon>
+        </button>
 
-      <!-- USUARIO -->
-      <button mat-icon-button aria-label="Cuenta de usuario" (click)="openAuthDialog()">
-        <mat-icon fontSet="material-icons-outlined" class="text-black">person_outline</mat-icon>
-      </button>
+        <button mat-icon-button aria-label="Cuenta de usuario" (click)="openAuthDialog()">
+          <mat-icon fontSet="material-icons-outlined" class="text-black">person_outline</mat-icon>
+        </button>
 
-      <!-- CARRITO -->
-      <button mat-icon-button routerLink="/cart" aria-label="Bolsa de compras" class="relative">
-        <mat-icon [matBadge]="cartItemCount" matBadgeColor="warn" [matBadgeHidden]="cartItemCount === 0"
-          fontSet="material-icons-outlined" class="text-black" aria-hidden="false">
-          local_mall
-        </mat-icon>
-      </button>
-    </div>
+        <button mat-icon-button (click)="openCartSheet()" aria-label="Bolsa de compras">
+          <mat-icon fontSet="material-icons-outlined" [matBadge]="cartItemCount" matBadgeColor="warn">
+            local_mall
+          </mat-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- SEGUNDO HEADER: CATEGORÍAS -->
+<div class="">
+  <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-10 flex items-center space-x-4 overflow-x-auto">
+    <a *ngFor="let cat of categories"
+       [routerLink]="['/products/category', cat.slug]"
+       class="text-gray-700 hover:text-black whitespace-nowrap">
+      {{ cat.name }}
+    </a>
   </nav>
+</div>
+
 </header>
+
+<!-- CONTENIDO DE LA PÁGINA -->
+<main class="pt-[64px] sm:pt-[64px] lg:pt-[64px]">
+
+</main>

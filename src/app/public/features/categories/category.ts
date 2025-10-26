@@ -22,4 +22,12 @@ export class Category {
   getTreeCategories() {
     return this.http.get<CategoryModel[]>(`${this.apiUrl}/tree`);
   }
+
+  getCategoryBySlug(slug: string) {
+    return this.http.get<CategoryModel>(`${this.apiUrl}/slug/${slug}`);
+  }
+
+  getAllCategorySlugs() {
+    return this.http.get<string[]>(`${this.apiUrl}/slugs`);
+  }
 }

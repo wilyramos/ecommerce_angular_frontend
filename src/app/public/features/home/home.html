@@ -1,19 +1,22 @@
 <section class="py-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
-  <h2 class="text-2xl font-semibold text-gray-900 mb-8">Categorías principales</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  <!-- CATEGORÍAS PRINCIPALES -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
     @for (category of rootCategories(); track category._id) {
-      <app-category-card [category]="category"></app-category-card>
+      <app-category-card [category]="category" [mode]="'overlay'"></app-category-card>
     }
   </div>
 
+  <!-- SUBCATEGORÍAS (children) -->
   @for (root of treeCategories(); track root._id) {
     @if (root.children && root.children.length > 0) {
       <section class="mt-20">
-        <h2 class="text-xl font-semibold pb-2">{{ root.name }}</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <h2 class="text-2xl font-semibold text-center mb-8 text-gray-900">
+          {{ root.name }}
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           @for (child of root.children; track child._id) {
-            <app-category-card [category]="child"></app-category-card>
+            <app-category-card [category]="child" [mode]="'below'"></app-category-card>
           }
         </div>
       </section>

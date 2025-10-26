@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
 })
 export class CategoryCard {
   @Input({ required: true }) category!: Category;
+  @Input() mode: 'overlay' | 'below' = 'overlay'; // 👈 modo visual
 
   onImageError(event: Event) {
     (event.target as HTMLImageElement).src = 'assets/images/placeholder-category.png';

@@ -1,5 +1,15 @@
-<app-header></app-header>
+<mat-drawer-container class="min-h-screen">
+  <!-- Drawer lateral del carrito -->
+  <mat-drawer #cartDrawer position="end" mode="over" class="w-80 bg-white shadow-xl">
+    <app-cart-sheet></app-cart-sheet>
+  </mat-drawer>
 
-<main class="flex-grow">
-  <router-outlet></router-outlet>
-</main>
+  <!-- Contenido principal -->
+  <mat-drawer-content>
+    <app-header (openCart)="openCart()"></app-header>
+
+    <main class="flex-grow">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-drawer-content>
+</mat-drawer-container>

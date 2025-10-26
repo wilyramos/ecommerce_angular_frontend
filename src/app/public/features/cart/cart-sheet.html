@@ -1,0 +1,41 @@
+<div class="flex flex-col h-full w-80 bg-white shadow-lg">
+  <!-- Encabezado -->
+  <div class="flex items-center justify-between p-4 border-b">
+    <h2 class="text-lg font-semibold">Tu carrito ({{ totalItems }})</h2>
+    <button mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Lista de productos -->
+  <div class="flex-1 overflow-y-auto p-4 space-y-4">
+    <div *ngFor="let item of carItems" class="flex items-center justify-between border-b pb-2">
+      <div class="flex flex-col">
+        <span class="font-medium text-gray-900">{{ item.name }}</span>
+        <span class="text-sm text-gray-500">Cantidad: {{ item.quantity }}</span>
+      </div>
+      <span class="font-semibold text-gray-800">
+        {{ item.price * item.quantity | currency:'USD' }}
+      </span>
+    </div>
+
+    <ng-container *ngIf="carItems.length === 0">
+      <div class="text-center text-gray-500 py-10">
+        <mat-icon class="text-4xl mb-2">shopping_bag</mat-icon>
+        <p>Tu carrito está vacío</p>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Total y botones -->
+  <div class="border-t p-4">
+    <div class="flex justify-between text-base font-semibold mb-4">
+      <span>Total</span>
+      <span>{{ totalPrice | currency:'USD' }}</span>
+    </div>
+
+    <button mat-raised-button color="primary" class="w-full">
+      Finalizar compra
+    </button>
+  </div>
+</div>

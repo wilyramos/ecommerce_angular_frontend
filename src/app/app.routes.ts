@@ -1,3 +1,5 @@
+//File: frontend/src/app/app.routes.ts
+
 import { Routes } from '@angular/router';
 import { adminGuard } from './core/guards/admin-guard';
 import { vendorGuard } from './core/guards/vendor-guard';

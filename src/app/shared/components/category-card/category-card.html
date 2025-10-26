@@ -1,24 +1,40 @@
-<a [routerLink]="['/products/category', category.slug]" class="group relative block">
-  <!-- Imagen -->
-  <div class="relative h-[180px] w-full overflow-hidden rounded-lg">
-    @if (category.image) {
+<a
+  [routerLink]="['/products/category', category.slug]"
+  class="block group"
+>
+  @if (mode === 'overlay') {
+    <!-- MODO OVERLAY: usado para categorías root -->
+    <div class="relative h-[300px] overflow-hidden">
       <img
-        [src]="category.image"
+        [src]="category.image || 'assets/images/placeholder-category.png'"
         [alt]="category.name"
-        class="h-full w-full object-cover object-center transition-transform duration-300 ease-in-out group-hover:scale-105"
+        class="h-full w-full object-cover object-center"
         loading="lazy"
         (error)="onImageError($event)"
       />
-    } @else {
-      <div class="h-full w-full bg-gray-200 flex items-center justify-center">
-        <span class="text-gray-500">No Image</span>
+      <div
+        class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition"
+      >
+        <h3 class="text-2xl font-semibold text-white uppercase tracking-wide text-center">
+          {{ category.name }}
+        </h3>
       </div>
-    }
-
-  </div>
-  <div class="absolute inset-0 flex items-center justify-center">
-    <h3 class="text-2xl font-bold text-white tracking-wide text-center px-4">
-      {{ category.name }}
-    </h3>
-  </div>
+    </div>
+  } @else {
+    <!-- MODO BELOW: usado para subcategorías -->
+    <div class="flex flex-col items-center">
+      <div class="h-[250px] w-full overflow-hidden ">
+        <img
+          [src]="category.image || 'assets/images/placeholder-category.png'"
+          [alt]="category.name"
+          class="h-full w-full object-cover object-center"
+          loading="lazy"
+          (error)="onImageError($event)"
+        />
+      </div>
+      <h3 class="mt-3 text-sm font-medium text-gray-900 uppercase tracking-wide">
+        {{ category.name }}
+      </h3>
+    </div>
+  }
 </a>

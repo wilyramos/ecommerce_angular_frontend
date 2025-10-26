@@ -1,3 +1,5 @@
+//File: frontend/src/app/public/public.routes.ts
+
 import { Routes } from '@angular/router';
 import { MainLayout } from './layouts/main-layout/main-layout';
 

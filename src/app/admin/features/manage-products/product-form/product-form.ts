@@ -94,6 +94,7 @@ export class ProductFormComponent implements OnInit {
       this.selectedCategory = this.data.categories.find(
         (cat) => cat._id === categoryId
       );
+      //Solo actualizar los atributos que tengan isVariant = true
       this.updateAllVariantsAttributes(this.selectedCategory);
       this.setFilterAttributes(this.selectedCategory);
     });
@@ -126,9 +127,10 @@ export class ProductFormComponent implements OnInit {
    * @param category Categoría seleccionada o undefined.
    */
   updateAllVariantsAttributes(category: Category | undefined): void {
-    const attributes = category?.attributes || [];
-    this.variants.controls.forEach((variantControl, index) => {
-      this.setVariantAttributes(index, attributes);
+    // poner los atributos solo las que son isVariant = true
+    const variantAttributes = category?.attributes?.filter(attr => attr.isVariant) || [];
+    this.variants.controls.forEach((_, index) => {
+      this.setVariantAttributes(index, variantAttributes);
     });
   }
 

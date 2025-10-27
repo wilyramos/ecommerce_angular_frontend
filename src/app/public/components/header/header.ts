@@ -10,8 +10,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthDialog } from '../../features/auth/auth-dialog/auth-dialog';
 import { Category as CategoryService } from '../../features/categories/category';
 
-
-// header.ts
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -28,14 +26,15 @@ import { Category as CategoryService } from '../../features/categories/category'
 })
 export class Header {
   public categoryService = new CategoryService();
+
   cartItemCount = 3;
   favoritesItemCount = 5;
   isLoggedIn = false;
 
-  categories: any[] = []; // <-- aquí guardaremos las categorías
+  categoriesRoot: any[] = [];
+  selectedCategory: any | null = null; // categoría root seleccionada
 
   private dialog = inject(MatDialog);
-
   @Output() openCart = new EventEmitter<void>();
 
   ngOnInit() {
@@ -43,13 +42,23 @@ export class Header {
   }
 
   loadCategories() {
-    this.categoryService.getAllCategories().subscribe({
+    // Usamos getTreeCategories para recibir la jerarquía completa
+    this.categoryService.getTreeCategories().subscribe({
       next: (data) => {
         console.log('Categorías cargadas:', data);
-        this.categories = data; // guardamos las categorías para iterar en template
+        // Solo guardamos las root (las que no tienen parentCategory)
+        this.categoriesRoot = data.filter(cat => !cat.parentCategory);
+        // Seleccionamos por defecto la primera
+        if (this.categoriesRoot.length > 0) {
+          this.selectedCategory = this.categoriesRoot[0];
+        }
       },
       error: (error) => console.error('Error al cargar categorías:', error)
     });
+  }
+
+  selectCategory(category: any) {
+    this.selectedCategory = category;
   }
 
   openAuthDialog(): void {

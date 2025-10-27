@@ -10,12 +10,11 @@ import { PaginatorComponent } from '../../../../shared/components/pagination/pag
 import { Category as CategoryService } from '../../categories/category';
 import { FilterSidebarComponent } from '../filter-component/filter-sidebar';
 // Routerlink
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-category-page',
   standalone: true,
-  imports: [CommonModule, ProductCard, PaginatorComponent, FilterSidebarComponent, RouterLink],
+  imports: [CommonModule, ProductCard, PaginatorComponent, FilterSidebarComponent],
   templateUrl: './category-page.page.html',
   styleUrls: ['./category-page.page.css'],
 })

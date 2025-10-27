@@ -30,4 +30,8 @@ export class Category {
   getAllCategorySlugs() {
     return this.http.get<string[]>(`${this.apiUrl}/slugs`);
   }
+
+  getCategoryDescendantsBySlug(slug: string) {
+    return this.http.get<CategoryModel[]>(`${this.apiUrl}/slug/${slug}/descendants`);
+  }
 }

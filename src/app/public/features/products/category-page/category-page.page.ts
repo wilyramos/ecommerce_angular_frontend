@@ -1,17 +1,21 @@
+// src/app/pages/public/category-page/category-page.page.ts
+
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicProductService } from '../../../../services/public-product.service';
-import type { PopulatedProduct, PaginatedProducts } from '../../../../shared/models/product.model';
+import type { PopulatedProduct } from '../../../../shared/models/product.model';
 import { ProductCard } from '../../../../shared/components/product-card/product-card';
 import { PaginatorComponent } from '../../../../shared/components/pagination/paginator';
 import { Category as CategoryService } from '../../categories/category';
 import { FilterSidebarComponent } from '../filter-component/filter-sidebar';
+// Routerlink
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-category-page',
   standalone: true,
-  imports: [CommonModule, ProductCard, PaginatorComponent, FilterSidebarComponent],
+  imports: [CommonModule, ProductCard, PaginatorComponent, FilterSidebarComponent, RouterLink],
   templateUrl: './category-page.page.html',
   styleUrls: ['./category-page.page.css'],
 })
@@ -34,19 +38,25 @@ export class CategoryPagePage implements OnInit {
   totalPages = 0;
 
   ngOnInit() {
-    // Escuchar cambios de slug o query params (paginación)
     this.route.paramMap.subscribe((params) => {
       this.slug = params.get('slug')!;
-      this.loadFromQueryParams();
-      this.loadFilters();
+      this.resetStateAndLoad();
     });
 
-    // También escuchamos cambios en query params (paginación)
     this.route.queryParams.subscribe(() => {
-      if (this.slug) {
+      if (this.slug && !this.isLoading) {
         this.loadProducts();
       }
     });
+  }
+
+  resetStateAndLoad() {
+    this.products = [];
+    this.filters = [];
+    this.selectedFilters = [];
+    this.isLoading = true;
+    this.loadFromQueryParams();
+    this.loadFilters();
   }
 
   loadFromQueryParams() {
@@ -56,17 +66,18 @@ export class CategoryPagePage implements OnInit {
     this.loadProducts();
   }
 
-  loadProducts(customFilters: any = {}) {
+  loadProducts() {
     this.isLoading = true;
     this.error = null;
 
     const filterParams = {
       page: this.page,
       limit: this.limit,
-      attributes: this.selectedFilters.flatMap(f =>
-        f.selected.map((v: string) => ({ key: f.name, value: v }))
-      ),
-      ...customFilters
+      attributes: this.selectedFilters
+        .filter(f => f.name !== 'Categorías') // <-- Ignoramos el filtro de navegación
+        .flatMap(f =>
+          f.selected.map((v: string) => ({ key: f.name, value: v }))
+        ),
     };
 
     this.productService.findProductsByCategorySlug(this.slug, filterParams)
@@ -75,18 +86,72 @@ export class CategoryPagePage implements OnInit {
           this.products = res.data;
           this.total = res.total;
           this.totalPages = res.totalPages;
+          this.isLoading = false;
         },
         error: (err) => {
           console.error('Error al cargar productos:', err);
           this.error = 'No se pudieron cargar los productos. Intenta nuevamente.';
-        },
-        complete: () => {
           this.isLoading = false;
         },
       });
   }
 
+  // <-- MÉTODO CLAVE MODIFICADO
+  loadFilters() {
+    this.categoryService.getCategoryDescendantsBySlug(this.slug).subscribe({
+      next: (descendants) => {
+        // Si la categoría tiene descendientes, los mostramos para navegar
+        if (descendants && descendants.length > 0) {
+          this.filters = [
+            {
+              name: 'Categorías',
+              values: descendants.map(desc => ({
+                name: desc.name,
+                value: desc.slug // Asumiendo que el backend devuelve el slug
+              })),
+              selected: []
+            }
+          ];
+        } else {
+          // Si no hay descendientes, es una categoría final. Mostramos sus atributos para filtrar.
+          this.categoryService.getCategoryBySlug(this.slug).subscribe({
+            next: (category) => {
+              this.filters = (category.attributes || []).map(attr => ({
+                ...attr,
+                selected: []
+              }));
+            },
+            error: (err) => console.error('Error al cargar atributos de categoría:', err)
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar descendientes de categoría:', err);
+      }
+    });
+  }
 
+  // <-- MÉTODO CLAVE MODIFICADO
+  onFiltersChange(updatedFilters: any[]) {
+    this.selectedFilters = updatedFilters;
+
+    // Verificamos si el filtro que cambió fue el de 'Categorías'
+    const categoryNavigationFilter = this.selectedFilters.find(f => f.name === 'Categorías');
+
+    if (categoryNavigationFilter && categoryNavigationFilter.selected.length > 0) {
+      // MODO NAVEGACIÓN: El usuario seleccionó una subcategoría de la lista
+      const selectedSlug = categoryNavigationFilter.selected[0];
+
+      // Reseteamos la selección para que no quede marcada
+      categoryNavigationFilter.selected = [];
+
+      // Navegamos a la nueva categoría
+      this.router.navigate(['/categories', selectedSlug]);
+    } else {
+      // MODO FILTRO: El usuario seleccionó un atributo, recargamos los productos
+      this.loadProducts();
+    }
+  }
 
   onPageChange(newPage: number) {
     this.page = newPage;
@@ -95,42 +160,10 @@ export class CategoryPagePage implements OnInit {
 
   updateQueryParams() {
     this.router.navigate([], {
-      queryParams: {
-        page: this.page,
-        limit: this.limit,
-      },
+      queryParams: { page: this.page, limit: this.limit },
       relativeTo: this.route,
       queryParamsHandling: 'merge',
     });
-  }
-
-  loadFilters() {
-    this.categoryService.getCategoryBySlug(this.slug).subscribe({
-      next: (category) => {
-        this.filters = (category.attributes || []).map(attr => ({
-          ...attr,
-          selected: []  // <-- inicializamos aquí
-        }));
-        console.log('Filtros de categoría cargados:', this.filters);
-      },
-      error: (err) => {
-        console.error('Error al cargar filtros de categoría:', err);
-      },
-    });
-  }
-
-  onFiltersChange(updatedFilters: any[]) {
-    this.selectedFilters = updatedFilters; // actualizamos la referencia
-
-    const filterQuery: any = {};
-    this.selectedFilters.forEach(f => {
-      if (f.selected && f.selected.length > 0) {
-        filterQuery[f.name.toLowerCase()] = f.selected;
-      }
-    });
-
-    // recargar productos con filtros
-    this.loadProducts();
   }
 
 }

@@ -1,16 +1,26 @@
 <div class="space-y-4">
+  <!-- Itera sobre cada grupo de filtro (p.ej. 'Categorías' o 'Color') -->
   <div *ngFor="let filter of filters">
-    <h3 class="font-semibold">{{ filter.name }}</h3>
+    <h3 class="font-semibold text-gray-800 mb-2">{{ filter.name }}</h3>
+
+    <!-- Contenedor para los botones de opción -->
     <div class="flex flex-wrap gap-2 mt-1">
+
+      <!-- Itera sobre cada valor disponible en ese grupo de filtro -->
+      <!-- 'val' es un objeto { name: '...', value: '...' } -->
       <button
         *ngFor="let val of filter.values"
-        (click)="toggleValue(filter, val)"
-        [class.bg-black]="filter.selected.includes(val)"
-        [class.text-white]="filter.selected.includes(val)"
-        class="px-2 py-1 border border-gray-200 rounded text-sm hover:bg-black hover:text-white transition-colors duration-200 cursor-pointer"
+        (click)="toggleValue(filter, val.value)"
+        [class.bg-gray-900]="filter.selected.includes(val.value)"
+        [class.text-white]="filter.selected.includes(val.value)"
+        [class.border-gray-300]="!filter.selected.includes(val.value)"
+        [class.text-gray-700]="!filter.selected.includes(val.value)"
+        class="px-3 py-1 border rounded text-sm font-medium hover:bg-gray-900 hover:text-white transition-colors duration-200 cursor-pointer"
       >
-        {{ val }}
+        <!-- Mostramos el 'name' (visible) -->
+        {{ val.name }}
       </button>
+
     </div>
   </div>
 </div>

@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 // Servicio y modelos
 import { Auth } from '../../../../core/services/auth';
@@ -34,6 +35,7 @@ export class AuthDialog {
   private fb = inject(FormBuilder);
   public dialogRef = inject(MatDialogRef<AuthDialog>);
   private authService = inject(Auth);
+  private router = inject(Router);
 
   public isLoading = false;
   public errorMessage: string | null = null;
@@ -69,6 +71,7 @@ export class AuthDialog {
         this.isLoading = false;
         localStorage.setItem('access_token', response.access_token);
         this.dialogRef.close(response.user);
+        this.router.navigate(['/admin']);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
@@ -92,6 +95,7 @@ export class AuthDialog {
       next: (newUser) => {
         this.isLoading = false;
         this.dialogRef.close(true);
+        this.router.navigate(['/profile']);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;

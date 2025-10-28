@@ -1,5 +1,4 @@
 import { Component, ViewEncapsulation, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 // Servicio y modelos
 import { Auth } from '../../../../core/services/auth';
@@ -27,6 +28,7 @@ import type { AuthResponse, LoginDto, RegisterDto } from '../../../../shared/mod
     MatTabsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSnackBarModule,
   ],
   templateUrl: './auth-dialog.html',
   encapsulation: ViewEncapsulation.None,
@@ -36,6 +38,8 @@ export class AuthDialog {
   public dialogRef = inject(MatDialogRef<AuthDialog>);
   private authService = inject(Auth);
   private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
 
   public isLoading = false;
   public errorMessage: string | null = null;
@@ -69,16 +73,17 @@ export class AuthDialog {
     this.authService.login(loginData).subscribe({
       next: (response: AuthResponse) => {
         this.isLoading = false;
-        localStorage.setItem('access_token', response.access_token);
         this.dialogRef.close(response.user);
         this.router.navigate(['/admin']);
+        this.showToast(`Login exitoso!`);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
-        this.errorMessage =
-          err.status === 401
-            ? 'El correo electrónico o la contraseña son incorrectos.'
-            : 'Ocurrió un error inesperado. Inténtalo de nuevo.';
+        const msg = err.status === 401
+          ? 'Credenciales incorrectas. Por favor, inténtalo de nuevo.'
+          : 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+        this.errorMessage = msg;
+        this.showToast(msg);
       },
     });
   }
@@ -106,4 +111,11 @@ export class AuthDialog {
       },
     });
   }
-}
+
+private showToast(message: string, action = 'Cerrar', duration = 3000) {
+  this.snackBar.open(message, action, {
+    duration,        // Duración en ms
+    horizontalPosition: 'center',
+    verticalPosition: 'top',
+  });
+}}

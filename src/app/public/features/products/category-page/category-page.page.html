@@ -1,11 +1,6 @@
 <mat-drawer-container class="min-h-screen bg-white">
   <!-- Drawer lateral de filtros -->
-  <mat-drawer
-    #filterDrawer
-    mode="over"
-    position="start"
-    class="w-80 shadow-xl bg-white"
-  >
+  <mat-drawer #filterDrawer mode="over" position="start" class="w-80 shadow-xl bg-white">
     <app-filter-sheet (close)="closeFilterDrawer()"></app-filter-sheet>
   </mat-drawer>
 
@@ -13,52 +8,45 @@
   <mat-drawer-content>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
       <div class="flex items-center justify-between mb-6 border-b border-gray-300 py-2">
-         <button
-    (click)="openFilterDrawer()"
-    class="hidden sm:inline-flex items-center gap-2 px-4 py-2 border border-gray-900 text-gray-900 rounded-lg hover:bg-gray-100 transition"
-  >
+        <!-- Botón de filtros -->
+        <button (click)="openFilterDrawer()"
+          class="hidden sm:inline-flex items-center gap-2 px-4 py-2 border border-gray-900 text-gray-900 rounded-lg hover:bg-gray-100 transition">
+          <span>Filtros</span>
+        </button>
 
-    <span>Filtros</span>
-  </button>
+        <!-- Filtros por categoría -->
+        <app-category-filters [filters]="filters" [selectedFilters]="selectedFilters"
+          (filterChange)="onFilterChange($event)" (openFilterDrawer)="openFilterDrawer()"></app-category-filters>
 
-      <app-category-filters
-        [filters]="filters"
-        [selectedFilters]="selectedFilters"
-        (filterChange)="onFilterChange($event)"
-        (openFilterDrawer)="openFilterDrawer()"
-      ></app-category-filters>
+        <!-- 🔹 Ordenamiento -->
+        <app-sort-control [currentSort]="sort" (sortChange)="onSortChange($event)"></app-sort-control>
       </div>
+
 
 
 
       <!-- 🔹 Contenido de productos -->
       @if (isLoading && products.length === 0) {
-        <div class="text-center py-20 text-gray-500">
-          Cargando productos...
-        </div>
+      <div class="text-center py-20 text-gray-500">
+        Cargando productos...
+      </div>
       } @else {
-        @if (error) {
-          <div class="text-center text-red-600 py-20">
-            {{ error }}
-          </div>
-        } @else {
-          <div
-            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-8"
-          >
-            @for (product of products; track product._id) {
-              <app-product-card [product]="product"></app-product-card>
-            }
-          </div>
-
-          <!-- 🔹 Paginación -->
-          <div class="mt-10">
-            <app-paginator
-              [page]="page"
-              [totalPages]="totalPages"
-              (pageChange)="onPageChange($event)"
-            ></app-paginator>
-          </div>
+      @if (error) {
+      <div class="text-center text-red-600 py-20">
+        {{ error }}
+      </div>
+      } @else {
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-8">
+        @for (product of products; track product._id) {
+        <app-product-card [product]="product"></app-product-card>
         }
+      </div>
+
+      <!-- 🔹 Paginación -->
+      <div class="mt-10">
+        <app-paginator [page]="page" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+      </div>
+      }
       }
     </div>
   </mat-drawer-content>

@@ -24,6 +24,7 @@ import {
   lucideSun,
 } from '@ng-icons/lucide';
 import { provideIcons } from '@ng-icons/core';
+import { SortControlComponent } from '../../../../shared/components/sort-control/sort-control';
 
 @Component({
   selector: 'app-category-page',
@@ -37,6 +38,7 @@ import { provideIcons } from '@ng-icons/core';
     PaginatorComponent,
     CategoryFiltersComponent,
     FilterSheetComponent,
+    SortControlComponent,
   ],
   providers: [
     provideIcons({
@@ -58,7 +60,9 @@ export class CategoryPagePage implements OnInit {
   private productService = inject(PublicProductService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-    private mainLayout = inject(MainLayout);
+  private mainLayout = inject(MainLayout);
+
+  sort = 'relevance';
 
 
   @ViewChild('filterDrawer') filterDrawer!: MatDrawer;
@@ -85,7 +89,11 @@ export class CategoryPagePage implements OnInit {
       this.loadProducts();
     });
 
-    this.route.queryParams.subscribe(() => {
+    this.route.queryParams.subscribe((params) => {
+      this.sort = params['sort'] || 'relevance';
+      this.page = +params['page'] || 1;
+      this.limit = +params['limit'] || 12;
+
       if (this.slug && !this.isLoading) {
         this.loadProducts();
       }
@@ -104,6 +112,7 @@ export class CategoryPagePage implements OnInit {
       page: this.page,
       limit: this.limit,
       filters: this.selectedFilters,
+      sort: this.sort,
     };
 
     this.productService.findProductsByCategorySlug(this.slug, filterParams).subscribe({
@@ -141,5 +150,18 @@ export class CategoryPagePage implements OnInit {
 
   closeFilterDrawer() {
     this.mainLayout.closeFilterDrawer();
+  }
+
+  onSortChange(newSort: string) {
+    this.sort = newSort;
+
+    // Actualiza la URL con el nuevo sort, sin recargar la página
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { sort: this.sort, page: 1 }, // reset page al cambiar sort
+      queryParamsHandling: 'merge',
+    });
+
+    this.loadProducts();
   }
 }

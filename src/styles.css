@@ -3,6 +3,8 @@
 /* Tailwind si lo usas */
 @import "tailwindcss";
 
+@import "../node_modules/@ng-select/ng-select/themes/material.theme.css";
+
 /* Body básico (puedes borrarlo si prefieres los estilos del tema) */
 html, body {
   /* height y margin ya están definidos en el tema, pero no hace daño dejarlos */

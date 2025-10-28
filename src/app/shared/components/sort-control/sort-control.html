@@ -1,0 +1,10 @@
+<ng-select
+  [items]="sortOptions"
+  bindLabel="label"
+  bindValue="value"
+  [(ngModel)]="currentSort"
+  (change)="onSortChange($event)"
+  placeholder="Ordenar por:"
+  class="w-60"
+>
+</ng-select>

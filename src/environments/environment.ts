@@ -1,6 +1,6 @@
-// File: frontend/src/environments/environment.ts
+//File: frontend/src/environments/environment.ts
 
 export const environment = {
   production: true,
-  apiUrl: 'https://ecommerce-nestjs-mongodb-backend.onrender.com',
+  apiUrl: 'http://localhost:3000',
 };

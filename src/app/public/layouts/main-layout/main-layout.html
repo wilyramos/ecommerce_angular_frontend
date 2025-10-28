@@ -1,14 +1,31 @@
 <mat-drawer-container class="min-h-screen">
-  <!-- Drawer lateral del carrito -->
-  <mat-drawer #cartDrawer position="end" mode="over" class="w-80 bg-white shadow-xl">
+  <mat-drawer
+    #filterDrawer
+    position="start"
+    mode="over"
+    class="w-full sm:w-96 max-w-full bg-white shadow-2xl"
+  >
+    <app-filter-sheet (close)="closeFilterDrawer()"></app-filter-sheet>
+  </mat-drawer>
+
+  <!-- 🛒 Drawer lateral del carrito -->
+  <mat-drawer
+    #cartDrawer
+    position="end"
+    mode="over"
+    class="w-80 shadow-xl bg-white"
+  >
     <app-cart-sheet></app-cart-sheet>
   </mat-drawer>
 
   <!-- Contenido principal -->
   <mat-drawer-content>
-    <app-header (openCart)="openCart()"></app-header>
+    <app-header
+      (openCart)="openCart()"
+      (openFilterDrawer)="openFilterDrawer()"
+    ></app-header>
 
-    <main class="flex-grow">
+    <main class="flex-grow bg-white">
       <router-outlet></router-outlet>
     </main>
   </mat-drawer-content>

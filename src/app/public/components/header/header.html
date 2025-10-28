@@ -27,18 +27,18 @@
         <mat-icon fontSet="material-icons-outlined" class="text-black">search</mat-icon>
       </button>
 
-      <button mat-icon-button aria-label="Favoritos">
+      <button mat-icon-button >
         <mat-icon fontSet="material-icons-outlined" class="text-2xl text-indigo-600 font-bold"
           [matBadge]="favoritesItemCount">
           favorite_border
         </mat-icon>
       </button>
 
-      <button mat-icon-button aria-label="Cuenta de usuario" (click)="openAuthDialog()">
+      <button mat-icon-button (click)="openAuthDialog()">
         <mat-icon fontSet="material-icons-outlined" class="text-black">person_outline</mat-icon>
       </button>
 
-      <button mat-icon-button (click)="openCartSheet()" aria-label="Bolsa de compras">
+      <button mat-icon-button (click)="openCartSheet()">
         <mat-icon fontSet="material-icons-outlined" [matBadge]="cartItemCount" matBadgeColor="warn">
           local_mall
         </mat-icon>

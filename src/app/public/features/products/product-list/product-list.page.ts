@@ -23,7 +23,6 @@ export class ProductListPage implements OnInit {
   isLoading = true;
   error: string | null = null;
 
-  // 📦 Paginación y filtros
   page = 1;
   limit = 12;
   total = 0;

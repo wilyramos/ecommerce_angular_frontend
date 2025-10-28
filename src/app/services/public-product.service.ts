@@ -18,6 +18,21 @@ export interface PublicProductFilterParams {
   sortOrder?: 'asc' | 'desc';
 }
 
+// Tomar el PublicProductFilterParams y cambiar 'category' por 'categorias' como array
+export interface PublicProductCategoryFilterParams {
+  page?: number;
+  limit?: number;
+  categorias?: string[];
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  tags?: string[];
+  attributes?: { key: string; value: string }[];
+  search?: string;
+  sortBy?: 'price' | 'name' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
   total: number;
@@ -75,22 +90,53 @@ export class PublicProductService {
   // Get product categories slug
   findProductsByCategorySlug(
     slug: string,
-    params: { page?: number; limit?: number; attributes?: any[]; brand?: string } = {}
+    params: PublicProductCategoryFilterParams = {}
   ): Observable<PaginatedResponse<PopulatedProduct>> {
-    let httpParams = new HttpParams()
-      .set('page', (params.page || 1).toString())
-      .set('limit', (params.limit || 12).toString());
+    let httpParams = new HttpParams();
 
+    // Paginación
+    httpParams = httpParams.set('page', (params.page || 1).toString());
+    httpParams = httpParams.set('limit', (params.limit || 12).toString());
+
+    // Categorías
+    if (params.categorias?.length) {
+      params.categorias.forEach(cat => {
+        httpParams = httpParams.append('categorias', cat);
+      });
+    }
+
+    // Marca
     if (params.brand) httpParams = httpParams.set('brand', params.brand);
-    if (params.attributes) {
+
+    // Rango de precios
+    if (params.minPrice !== undefined) httpParams = httpParams.set('minPrice', params.minPrice.toString());
+    if (params.maxPrice !== undefined) httpParams = httpParams.set('maxPrice', params.maxPrice.toString());
+
+    // Tags
+    if (params.tags?.length) {
+      params.tags.forEach(tag => {
+        httpParams = httpParams.append('tags', tag);
+      });
+    }
+
+    // Attributes
+    if (params.attributes?.length) {
       params.attributes.forEach(attr => {
         httpParams = httpParams.append('attributes', JSON.stringify(attr));
       });
     }
+
+    // Search y ordenamiento
+    if (params.search) httpParams = httpParams.set('search', params.search);
+    if (params.sortBy) httpParams = httpParams.set('sortBy', params.sortBy);
+    if (params.sortOrder) httpParams = httpParams.set('sortOrder', params.sortOrder);
+
+    console.log('Fetching a la url con params:', `${this.apiUrl}/by-category/${slug}`, httpParams.toString());
 
     return this.http.get<PaginatedResponse<PopulatedProduct>>(
       `${this.apiUrl}/by-category/${slug}`,
       { params: httpParams }
     );
   }
+
 }

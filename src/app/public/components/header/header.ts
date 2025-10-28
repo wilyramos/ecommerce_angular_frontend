@@ -9,6 +9,8 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthDialog } from '../../features/auth/auth-dialog/auth-dialog';
 import { Category as CategoryService } from '../../features/categories/category';
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-header',
@@ -20,9 +22,11 @@ import { Category as CategoryService } from '../../features/categories/category'
     MatBadgeModule,
     MatMenuModule,
     MatDividerModule,
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
   templateUrl: './header.html',
+
 })
 export class Header {
   public categoryService = new CategoryService();
@@ -45,7 +49,6 @@ export class Header {
     // Usamos getTreeCategories para recibir la jerarquía completa
     this.categoryService.getTreeCategories().subscribe({
       next: (data) => {
-        console.log('Categorías cargadas:', data);
         // Solo guardamos las root (las que no tienen parentCategory)
         this.categoriesRoot = data.filter(cat => !cat.parentCategory);
         // Seleccionamos por defecto la primera

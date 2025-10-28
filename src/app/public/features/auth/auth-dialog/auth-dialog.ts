@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { TokenService } from '../../../../core/services/token';
 
 // Servicio y modelos
 import { Auth } from '../../../../core/services/auth';
@@ -39,6 +39,7 @@ export class AuthDialog {
   private authService = inject(Auth);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private tokenService = inject(TokenService);
 
 
   public isLoading = false;
@@ -74,8 +75,15 @@ export class AuthDialog {
       next: (response: AuthResponse) => {
         this.isLoading = false;
         this.dialogRef.close(response.user);
-        this.router.navigate(['/admin']);
+        this.tokenService.saveToken(response.access_token); // ya lo haces en el service, opcional aquí
+
         this.showToast(`Login exitoso!`);
+
+        // Redirigir según rol
+        const role = response.user.role;
+        if (role === 'admin') this.router.navigate(['/admin']);
+        else if (role === 'vendor') this.router.navigate(['/products']);
+        else this.router.navigate(['/products']);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
@@ -87,6 +95,7 @@ export class AuthDialog {
       },
     });
   }
+
 
   onRegister(): void {
     if (this.registerForm.invalid || this.isLoading) return;
@@ -101,6 +110,7 @@ export class AuthDialog {
         this.isLoading = false;
         this.dialogRef.close(true);
         this.router.navigate(['/profile']);
+        this.showToast(`Registro exitoso!`);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
@@ -112,10 +122,11 @@ export class AuthDialog {
     });
   }
 
-private showToast(message: string, action = 'Cerrar', duration = 3000) {
-  this.snackBar.open(message, action, {
-    duration,        // Duración en ms
-    horizontalPosition: 'center',
-    verticalPosition: 'top',
-  });
-}}
+  private showToast(message: string, action = 'Cerrar', duration = 3000) {
+    this.snackBar.open(message, action, {
+      duration,        // Duración en ms
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
+}

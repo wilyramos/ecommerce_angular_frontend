@@ -64,7 +64,6 @@ export class CategoryPagePage implements OnInit {
 
   sort = 'relevance';
 
-
   @ViewChild('filterDrawer') filterDrawer!: MatDrawer;
 
   slug = '';
@@ -76,10 +75,6 @@ export class CategoryPagePage implements OnInit {
   limit = 12;
   total = 0;
   totalPages = 0;
-
-  filters = [
-    { name: 'Marca', values: ['Apple', 'Samsung', 'Xiaomi'] },
-  ];
 
   selectedFilters: Record<string, string[]> = {};
 

@@ -7,25 +7,24 @@
   <!-- Contenido principal -->
   <mat-drawer-content>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-      <div class="flex items-center justify-between mb-6 border-b border-gray-300 py-2">
-        <!-- Botón de filtros -->
+      <div class="flex items-center justify-between mb-6 border-b border-gray-300 py-2 gap-2">
+
+        <!-- Botón de filtros (Móvil) -->
         <button (click)="openFilterDrawer()"
-          class="hidden sm:inline-flex items-center gap-2 px-4 py-2 border border-gray-900 text-gray-900 rounded-lg hover:bg-gray-100 transition">
+          class="inline-flex items-center gap-2 px-3 py-2 border border-gray-900 text-gray-900 rounded-lg hover:bg-gray-100 transition text-sm">
           <span>Filtros</span>
         </button>
 
-        <!-- Filtros por categoría -->
-        <app-category-filters [filters]="filters" [selectedFilters]="selectedFilters"
-          (filterChange)="onFilterChange($event)" (openFilterDrawer)="openFilterDrawer()"></app-category-filters>
+        <!-- Filtros inline (Solo Desktop)-->
+        <div class="hidden sm:flex flex-1">
+          <app-category-filters (openFilterDrawer)="openFilterDrawer()"></app-category-filters>
+        </div>
 
-        <!-- 🔹 Ordenamiento -->
+        <!-- Ordenamiento -->
         <app-sort-control [currentSort]="sort" (sortChange)="onSortChange($event)"></app-sort-control>
       </div>
 
 
-
-
-      <!-- 🔹 Contenido de productos -->
       @if (isLoading && products.length === 0) {
       <div class="text-center py-20 text-gray-500">
         Cargando productos...

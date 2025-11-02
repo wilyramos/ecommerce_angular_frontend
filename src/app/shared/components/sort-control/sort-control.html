@@ -3,8 +3,9 @@
   bindLabel="label"
   bindValue="value"
   [(ngModel)]="currentSort"
-  (change)="onSortChange($event)"
+  (ngModelChange)="onSortChange($event)"
+  [searchable]="false"
   placeholder="Ordenar por:"
-  class="w-60"
+  class="w-60 "
 >
 </ng-select>

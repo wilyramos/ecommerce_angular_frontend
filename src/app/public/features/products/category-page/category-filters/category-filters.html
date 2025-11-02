@@ -1,23 +1,25 @@
 <div class="">
   <div class="flex flex-wrap items-center justify-between gap-4">
+
     <div class="flex flex-wrap items-center gap-2 flex-1">
       @for (filter of filters; track filter.name) {
-        @for (value of filter.values; track value) {
+        @for (value of filter.values; track value.slug) {
           <button
-            (click)="toggleFilter(filter.name, value)"
-            class="px-3 py-1 text-sm border rounded-full transition
-                   hover:bg-gray-100
-                   [class.bg-blue-600]='isSelected(filter.name, value)'
-                   [class.text-white]='isSelected(filter.name, value)'
-                   [class.border-blue-600]='isSelected(filter.name, value)'"
+            (click)="toggleFilter(filter.name, value.slug)"
+            class="px-3 py-2 text-sm border rounded-md transition border-gray-400 cursor-pointer
+                  hover:bg-gray-100
+                  [class.bg-blue-600]='isSelected(filter.name, value.slug)'
+                  [class.text-white]='isSelected(filter.name, value.slug)'
+                  [class.border-blue-600]='isSelected(filter.name, value.slug)'"
           >
-            {{ value }}
+            {{ value.name }}
           </button>
         }
       }
     </div>
-     <button
-      class="text-sm  hover:underline whitespace-nowrap cursor-pointer"
+
+    <button
+      class="text-sm hover:underline whitespace-nowrap cursor-pointer"
       (click)="clearAll()"
     >
       Limpiar todo

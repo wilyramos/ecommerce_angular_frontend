@@ -5,7 +5,7 @@
       <nav class="h-12 flex space-x-6 overflow-x-auto">
         @for (cat of categoriesRoot; track cat._id) {
         <button (click)="selectCategory(cat)"
-          class="text-gray-600 hover:text-black whitespace-nowrap relative transition"
+          class="text-gray-600 hover:text-gray-500 hover:bg-[#f6f6f6] px-2 rounded whitespace-nowrap relative transition cursor-pointer"
           [class.text-black]="selectedCategory?._id === cat._id">
           {{ cat.name }}
           @if (selectedCategory?._id === cat._id) {

@@ -1,3 +1,5 @@
+//File: frontend/src/app/public/features/brands/brand.ts
+
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type { Brand as BrandModel } from '../../../shared/models/brand.model';

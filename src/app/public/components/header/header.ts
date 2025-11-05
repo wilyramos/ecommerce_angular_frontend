@@ -10,7 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthDialog } from '../../features/auth/auth-dialog/auth-dialog';
 import { Category as CategoryService } from '../../features/categories/category';
 import { RouterModule } from '@angular/router';
-
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-header',
@@ -23,7 +24,9 @@ import { RouterModule } from '@angular/router';
     MatMenuModule,
     MatDividerModule,
     CommonModule,
-    RouterModule
+    RouterModule,
+    MatSelectModule,
+    MatFormFieldModule
   ],
   templateUrl: './header.html',
 

@@ -1,11 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
 
 import { Header } from '../../components/header/header';
-import { CartSheet } from '../../features/cart/cart-sheet';
-import { FilterSheetComponent } from '../../features/sheet/filter-sheet';
+// import { CartSheet } from '../../features/cart/cart-sheet';
+// import { FilterSheetComponent } from '../../features/sheet/filter-sheet';
 import { Footer } from '../../components/footer/footer';
 
 @Component({
@@ -15,30 +14,26 @@ import { Footer } from '../../components/footer/footer';
     CommonModule,
     RouterOutlet,
     Header,
-    MatSidenavModule,
-    CartSheet,
-    FilterSheetComponent,
     Footer,
   ],
   templateUrl: './main-layout.html',
 })
 export class MainLayout {
-  @ViewChild('cartDrawer') cartDrawer!: MatDrawer;
-  @ViewChild('filterDrawer') filterDrawer!: MatDrawer;
+  isCartOpen = false;
 
-  /** 🛒 Abre y cierra el carrito */
+  isFilterOpen = false;
+
   openCart() {
-    this.cartDrawer.open();
+    this.isCartOpen = true;
   }
   closeCart() {
-    this.cartDrawer.close();
+    this.isCartOpen = false;
   }
 
-  /** 🧩 Abre y cierra el panel de filtros */
   openFilterDrawer() {
-    this.filterDrawer.open();
+    this.isFilterOpen = true;
   }
   closeFilterDrawer() {
-    this.filterDrawer.close();
+    this.isFilterOpen = false;
   }
 }

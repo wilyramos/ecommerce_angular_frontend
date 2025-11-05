@@ -1,1 +1,117 @@
-<p>product-detail works!</p>
+<!-- LOADING -->
+<div *ngIf="isLoading" class="flex items-center justify-center min-h-[70vh]"></div>
+
+<!-- ERROR -->
+<div
+  *ngIf="errorMessage"
+  class="flex items-center justify-center min-h-[70vh] p-4 text-center text-red-600"
+>
+  {{ errorMessage }}
+</div>
+
+<!-- PRODUCTO -->
+<div *ngIf="product && !isLoading" class="max-w-7xl mx-auto p-4 md:p-8 overflow-visible">
+  <div class="grid grid-cols-[2fr_1fr] gap-10 overflow-visible">
+
+    <!-- IMÁGENES -->
+    <div class="space-y-6">
+      <div
+        *ngFor="let img of selectedVariant?.images || product.variants[0].images"
+        class="flex items-center justify-center overflow-hidden "
+      >
+        <img
+          [src]="img"
+          alt="Imagen de {{ product.name }}"
+          loading="lazy"
+          class="w-full h-auto max-h-[1200px] object-cover  shadow-sm"
+          (click)="selectImage(img)"
+        />
+      </div>
+    </div>
+
+    <!-- INFO PRODUCTO -->
+    <div class="sticky top-24 h-fit self-start">
+      <div class="p-2">
+        <!-- Marca, nombre, precio -->
+        <div class="mb-5">
+          <h2 class="text-xl font-semibold uppercase tracking-wider mb-1">
+            {{ product.brand?.name }}
+          </h2>
+          <h1 class="text-2xl font-light text-gray-800 mb-3">
+            {{ product.name }}
+          </h1>
+          <p class="text-3xl font-medium text-gray-900">
+            S/
+            {{ (selectedVariant ? selectedVariant.price : product.variants[0].price) | number: "1.2-2" }}
+          </p>
+        </div>
+
+        <!-- Descripción corta -->
+        <p class="text-gray-600 whitespace-pre-line mb-6 text-sm leading-relaxed line-clamp-6">
+          {{ product.shortDescription }}
+        </p>
+
+        <!-- Colores -->
+        <div *ngIf="uniqueColors.length > 0" class="mb-6">
+          <h3 class="font-semibold mb-3 text-sm">
+            Color:
+            <span class="font-light text-gray-600">{{ selectedColor || 'Selecciona un color' }}</span>
+          </h3>
+          <div class="flex gap-2 flex-wrap">
+            <button
+              *ngFor="let color of uniqueColors"
+              (click)="selectColor(color)"
+              class="h-10 px-4 py-2 border rounded-md text-sm transition-all duration-200"
+              [class.bg-black]="color === selectedColor"
+              [class.text-white]="color === selectedColor"
+              [class.border-gray-300]="color !== selectedColor"
+              [class.hover:border-black]="color !== selectedColor"
+            >
+              {{ color }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Tallas -->
+        <div class="mb-8">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-semibold text-sm">Talla:</h3>
+            <a
+              href="#"
+              class="text-sm font-light text-gray-500 underline hover:text-black transition-colors"
+              >Guía de tallas</a
+            >
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <button
+              *ngFor="let talla of availableTallas"
+              (click)="selectTalla(talla)"
+              class="h-10 w-16 border rounded-md text-sm transition-all duration-200"
+              [class.bg-black]="talla === selectedTalla"
+              [class.text-white]="talla === selectedTalla"
+              [class.border-gray-300]="talla !== selectedTalla"
+              [class.hover:border-black]="talla !== selectedTalla"
+              [class.text-gray-400]="isOutOfStock(talla) && talla !== selectedTalla"
+              [class.line-through]="isOutOfStock(talla)"
+              [disabled]="isOutOfStock(talla)"
+            >
+              {{ talla }}
+            </button>
+          </div>
+        </div>
+
+        <!-- BOTÓN AÑADIR -->
+        <button
+          (click)="addToCart()"
+          [disabled]="!selectedVariant || selectedVariant.stock === 0"
+          class="w-full bg-black text-white px-8 py-4 rounded-md text-sm uppercase tracking-wider transition-colors duration-200 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          Añadir al carrito
+        </button>
+
+        <!-- INFO EXTRA -->
+        <div class="border-t mt-8 pt-4 space-y-2"></div>
+      </div>
+    </div>
+  </div>
+</div>

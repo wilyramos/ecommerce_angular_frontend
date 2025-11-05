@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { BrandService } from '../../../brands/brand';
 import { Brand as BrandModel } from '../../../../../shared/models/brand.model';
 
@@ -22,7 +22,7 @@ interface FilterConfig {
 })
 export class CategoryFiltersComponent implements OnInit {
 
-  filters: FilterConfig[] = []; // ✅ ahora interno
+  filters: FilterConfig[] = []; // filtros internos + dinámicos
   selectedFilters: Record<string, string[]> = {};
 
   @Output() filterChange = new EventEmitter<Record<string, string[]>>();
@@ -31,14 +31,17 @@ export class CategoryFiltersComponent implements OnInit {
     private brandService: BrandService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.initializeFilters();
-    this.loadFiltersFromUrl(); // ✅ para mantener estado al recargar
+
+    this.route.queryParams.subscribe(params => {
+      this.syncFiltersWithUrl(params);
+    });
   }
 
-  /** ✅ Armamos todos los filtros internos */
+  /** Inicializa filtros internos y carga marcas dinámicas */
   initializeFilters() {
     this.filters = [
       {
@@ -49,15 +52,12 @@ export class CategoryFiltersComponent implements OnInit {
           // { slug: 'blue', name: 'Azul' },
         ]
       }
-      // luego podrás meter más filtros internos aquí
-      // { name: 'storage', values: [...] },
-      // { name: 'condition', values: [...] },
     ];
 
-    this.loadBrands(); // ✅ añade brands dinámicamente
+    this.loadBrands();
   }
 
-  /** ✅ Añadir filtro dinámico de marcas */
+  /** Carga marcas dinámicas */
   loadBrands() {
     this.brandService.getAllBrands().subscribe((brands: BrandModel[]) => {
       this.filters.push({
@@ -70,64 +70,67 @@ export class CategoryFiltersComponent implements OnInit {
     });
   }
 
-  /** ✅ Leer filtros desde URL (cuando entras a la página) */
-  loadFiltersFromUrl() {
-    this.route.queryParams.subscribe(params => {
-      for (const key in params) {
-        const values = params[key].split(',');
-        this.selectedFilters[key] = values;
+  /** 🔹 Sincroniza los filtros seleccionados con la URL */
+  private syncFiltersWithUrl(params: Params) {
+    const newSelected: Record<string, string[]> = {};
+
+    for (const key in params) {
+      if (params[key]) {
+        newSelected[key] = params[key].split(',');
       }
+    }
+
+    this.selectedFilters = newSelected;
+    this.filterChange.emit(this.selectedFilters);
+  }
+
+  /** Toggle de filtro al hacer click */
+  toggleFilter(filterName: string, slug: string) {
+    const current = this.selectedFilters[filterName] || [];
+
+    const newValues = current.includes(slug)
+      ? current.filter(v => v !== slug)
+      : [...current, slug];
+
+    if (newValues.length === 0) {
+      const updated = { ...this.selectedFilters };
+      delete updated[filterName];
+      this.selectedFilters = updated;
+    } else {
+      this.selectedFilters = {
+        ...this.selectedFilters,
+        [filterName]: newValues
+      };
+    }
+
+    this.updateUrl();
+    this.filterChange.emit(this.selectedFilters);
+  }
+
+  /** Actualiza la URL con los filtros seleccionados */
+  updateUrl() {
+    const queryParams: any = {};
+
+    Object.keys(this.selectedFilters).forEach(key => {
+      const values = this.selectedFilters[key];
+      if (values?.length > 0) {
+        queryParams[key] = values.join(',');
+      }
+    });
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: '',
     });
   }
 
-  /** ✅ Al hacer click, actualizar estado + URL */
-  toggleFilter(filterName: string, slug: string) {
-  const current = this.selectedFilters[filterName] || [];
-
-  // Si estaba → quitar, si no estaba → agregar
-  const newValues = current.includes(slug)
-    ? current.filter(v => v !== slug)
-    : [...current, slug];
-
-  // ✅ Si no quedan valores, eliminar la key completa
-  if (newValues.length === 0) {
-    const updated = { ...this.selectedFilters };
-    delete updated[filterName];
-    this.selectedFilters = updated;
-  } else {
-    this.selectedFilters = {
-      ...this.selectedFilters,
-      [filterName]: newValues
-    };
-  }
-
-  this.updateUrl();
-  this.filterChange.emit(this.selectedFilters);
-}
-
-updateUrl() {
-  const queryParams: any = {};
-
-  Object.keys(this.selectedFilters).forEach(key => {
-    const values = this.selectedFilters[key];
-    if (values?.length > 0) {
-      queryParams[key] = values.join(',');
-    }
-  });
-
-  this.router.navigate([], {
-    relativeTo: this.route,
-    queryParams,
-    // ❗️IMPORTANTE: no uses merge aquí,
-    // para que elimine params que ya no existen
-    queryParamsHandling: '',
-  });
-}
-
+  /** Comprueba si un filtro está seleccionado */
   isSelected(filterName: string, slug: string): boolean {
     return this.selectedFilters[filterName]?.includes(slug) ?? false;
   }
 
+  /** Limpiar todos los filtros */
   clearAll() {
     this.selectedFilters = {};
     this.router.navigate([], {

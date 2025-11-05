@@ -15,7 +15,7 @@ export const PRODUCTS_ROUTES: Routes = [
     component: CategoryPagePage, // /products/category/zapatillas
   },
   {
-    path: ':id',
+    path: ':slug',
     component: ProductDetailPage, // /products/123
   },
 ];

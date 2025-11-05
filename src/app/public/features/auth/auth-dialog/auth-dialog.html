@@ -1,6 +1,5 @@
-<h2 class="text-xl p-6 text-gray-700">Bienvenido a BALENS</h2>
 
-<mat-dialog-content class="p-6 pt-0">
+<mat-dialog-content class="px-6 pt-4">
   <mat-tab-group class="w-full">
     <!-- ================== LOGIN ================== -->
     <mat-tab label="Inicia Sesión">
@@ -19,7 +18,7 @@
             type="email"
             formControlName="email"
             placeholder="ejemplo@correo.com"
-            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
           <p
             *ngIf="isInvalidField(loginForm, 'email') && loginForm.get('email')?.hasError('required')"
@@ -45,7 +44,7 @@
             type="password"
             formControlName="password"
             placeholder="••••••••"
-            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
           <p
             *ngIf="isInvalidField(loginForm, 'password') && loginForm.get('password')?.hasError('required')"
@@ -65,7 +64,7 @@
           <button
             type="button"
             mat-dialog-close
-            class="rounded-full px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
+            class="rounded-lg px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
           >
             Cancelar
           </button>
@@ -73,7 +72,7 @@
           <button
             type="submit"
             [disabled]="loginForm.invalid || isLoading"
-            class="rounded-full bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition"
+            class="rounded-lg bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition"
           >
             <span *ngIf="!isLoading">Iniciar Sesión</span>
             <span *ngIf="isLoading">Cargando...</span>
@@ -99,7 +98,7 @@
             type="text"
             formControlName="name"
             placeholder="Juan Pérez"
-            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
           <p
             *ngIf="isInvalidField(registerForm, 'name') && registerForm.get('name')?.hasError('required')"
@@ -119,7 +118,7 @@
             type="email"
             formControlName="email"
             placeholder="ejemplo@correo.com"
-            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
           <p
             *ngIf="isInvalidField(registerForm, 'email') && registerForm.get('email')?.hasError('required')"
@@ -145,7 +144,7 @@
             type="password"
             formControlName="password"
             placeholder="••••••••"
-            class="w-full rounded-3xl border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
           />
           <p
             *ngIf="isInvalidField(registerForm, 'password') && registerForm.get('password')?.hasError('required')"
@@ -171,7 +170,7 @@
           <button
             type="button"
             mat-dialog-close
-            class="rounded-full px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
+            class="rounded-lg px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
           >
             Cancelar
           </button>
@@ -179,7 +178,7 @@
           <button
             type="submit"
             [disabled]="registerForm.invalid || isLoading"
-            class="rounded-full bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition"
+            class="rounded-lg bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition"
           >
             <span *ngIf="!isLoading">Registrarme</span>
             <span *ngIf="isLoading">Registrando...</span>

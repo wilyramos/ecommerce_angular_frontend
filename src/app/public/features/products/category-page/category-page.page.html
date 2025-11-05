@@ -1,17 +1,17 @@
-<mat-drawer-container class="min-h-screen bg-white">
+<mat-drawer-container >
   <!-- Drawer lateral de filtros -->
-  <mat-drawer #filterDrawer mode="over" position="start" class="w-80 shadow-xl bg-white">
+  <mat-drawer #filterDrawer mode="over" position="start" class="w-80 shadow-xl">
     <app-filter-sheet (close)="closeFilterDrawer()"></app-filter-sheet>
   </mat-drawer>
 
   <!-- Contenido principal -->
   <mat-drawer-content>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-      <div class="flex items-center justify-between mb-6 border-b border-gray-300 py-2 gap-2">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  bg-white">
+      <div class="flex items-center justify-between  border-b border-gray-300 gap-2 bg-white  ">
 
         <!-- Botón de filtros (Móvil) -->
         <button (click)="openFilterDrawer()"
-          class="inline-flex items-center gap-2 px-3 py-2 border border-gray-900 text-gray-900 rounded-lg hover:bg-gray-100 transition text-sm">
+          class="inline-flex items-center gap-2 px-3 py-1.5 border-2 border-black  rounded-md hover:bg-gray-100 transition text-sm cursor-pointer">
           <span>Filtros</span>
         </button>
 
@@ -41,7 +41,6 @@
         }
       </div>
 
-      <!-- 🔹 Paginación -->
       <div class="mt-10">
         <app-paginator [page]="page" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
       </div>

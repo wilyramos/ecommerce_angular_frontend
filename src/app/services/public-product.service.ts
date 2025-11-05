@@ -29,7 +29,7 @@ export interface PublicProductCategoryFilterParams {
   tags?: string[];
   attributes?: { key: string; value: string }[];
   search?: string;
-  sortBy?: 'price' | 'name' | 'createdAt';
+  sortBy?: 'price' | 'name' | 'createdAt' | string;
   sortOrder?: 'asc' | 'desc';
 }
 

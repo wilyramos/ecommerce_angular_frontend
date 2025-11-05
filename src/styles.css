@@ -7,7 +7,6 @@
 
 /* Body básico (puedes borrarlo si prefieres los estilos del tema) */
 html, body {
-  /* height y margin ya están definidos en el tema, pero no hace daño dejarlos */
+  font-family: "Nunito", sans-serif;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

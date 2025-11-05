@@ -1,1 +1,103 @@
-<p>footer works!</p>
+<footer class="bg-white border-t border-gray-200 text-gray-700 text-sm">
+
+  <!-- Top sections -->
+  <div class="container mx-auto px-6 lg:px-12 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+
+    <!-- Logo + Description -->
+    <div class="lg:col-span-2">
+      <h2 class="text-2xl font-semibold tracking-tight">BALENS</h2>
+      <p class="text-gray-500 mt-3 leading-relaxed">
+        Tecnología de alta gama, productos premium y la mejor experiencia de compra online.
+      </p>
+
+      <!-- Newsletter -->
+      <div class="mt-6">
+        <p class="font-medium text-gray-800 mb-2">Suscríbete para novedades</p>
+        <div class="flex gap-2">
+          <input
+            class="border border-gray-300 rounded-sm px-3 py-2 w-full focus:outline-none focus:border-black"
+            placeholder="Ingresa tu email" />
+          <button class="bg-black text-white px-4 rounded-sm hover:bg-gray-900 transition">
+            Enviar
+          </button>
+        </div>
+      </div>
+
+      <!-- Follow Us -->
+      <div class="mt-6">
+        <p class="font-medium text-gray-800 mb-2">Síguenos</p>
+        <div class="flex gap-4">
+
+          <!-- Instagram -->
+          <a href="https://instagram.com" target="_blank" class="hover:opacity-70 transition">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M8 2h8a6 6 0 0 1 6 6v8a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z" />
+              <circle cx="12" cy="12" r="3.5"/>
+              <circle cx="17.5" cy="6.5" r="1"/>
+            </svg>
+          </a>
+
+          <!-- TikTok -->
+          <a href="https://tiktok.com" target="_blank" class="hover:opacity-70 transition">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+              <path d="M21.5 7.7a6.35 6.35 0 0 1-3.9-1.3v7.5a6.8 6.8 0 1 1-6.8-6.8v3.4a3.4 3.4 0 1 0 3.4 3.4V2h3.4a5.9 5.9 0 0 0 3.9 4.2z"/>
+            </svg>
+          </a>
+
+          <!-- Facebook -->
+          <a href="https://facebook.com" target="_blank" class="hover:opacity-70 transition">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M22 2H2v20h10v-7H9v-3h3V9.5C12 6.5 13.9 5 16.6 5c1.2 0 2.3.1 2.6.1v3h-1.8c-1.4 0-1.7.6-1.7 1.5V12H19l-.4 3h-2.5v7H22z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shop -->
+    <div>
+      <p class="font-semibold mb-3 text-gray-800">Compra</p>
+      <ul class="space-y-2">
+        <li><a class="hover:text-black transition">Nuevos ingresos</a></li>
+        <li><a class="hover:text-black transition">Ofertas</a></li>
+        <li><a class="hover:text-black transition">Más vendidos</a></li>
+        <li><a class="hover:text-black transition">Gift Cards</a></li>
+      </ul>
+    </div>
+
+    <!-- Help -->
+    <div>
+      <p class="font-semibold mb-3 text-gray-800">Ayuda</p>
+      <ul class="space-y-2">
+        <li><a class="hover:text-black transition">Envíos</a></li>
+        <li><a class="hover:text-black transition">Cambios & Devoluciones</a></li>
+        <li><a class="hover:text-black transition">Rastrear pedido</a></li>
+        <li><a class="hover:text-black transition">Contacto</a></li>
+      </ul>
+    </div>
+
+    <!-- Legal -->
+    <div>
+      <p class="font-semibold mb-3 text-gray-800">Información</p>
+      <ul class="space-y-2">
+        <li><a class="hover:text-black transition">Política de privacidad</a></li>
+        <li><a class="hover:text-black transition">Términos & Condiciones</a></li>
+        <li><a class="hover:text-black transition">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-gray-200"></div>
+
+  <!-- Bottom bar -->
+  <div class="container mx-auto px-6 lg:px-12 py-4 flex flex-col sm:flex-row justify-between items-center gap-3 text-gray-500 text-xs">
+    <p>© {{ currentYear }} BALENS. Todos los derechos reservados.</p>
+
+    <div class="flex gap-4 ">
+      <img src="/visa.svg" alt="Visa" class="h-5" />
+      <img src="/mastercard.svg" alt="Mastercard" class="h-5" />
+      <img src="/applepay.svg" alt="Apple Pay" class="h-5" />
+    </div>
+  </div>
+
+</footer>

@@ -82,35 +82,47 @@ export class CategoryFiltersComponent implements OnInit {
 
   /** ✅ Al hacer click, actualizar estado + URL */
   toggleFilter(filterName: string, slug: string) {
-    const current = this.selectedFilters[filterName] || [];
+  const current = this.selectedFilters[filterName] || [];
 
-    const newValues = current.includes(slug)
-      ? current.filter(v => v !== slug)
-      : [...current, slug];
+  // Si estaba → quitar, si no estaba → agregar
+  const newValues = current.includes(slug)
+    ? current.filter(v => v !== slug)
+    : [...current, slug];
 
+  // ✅ Si no quedan valores, eliminar la key completa
+  if (newValues.length === 0) {
+    const updated = { ...this.selectedFilters };
+    delete updated[filterName];
+    this.selectedFilters = updated;
+  } else {
     this.selectedFilters = {
       ...this.selectedFilters,
-      [filterName]: newValues,
+      [filterName]: newValues
     };
-
-    this.updateUrl();
-    this.filterChange.emit(this.selectedFilters);
   }
 
-  updateUrl() {
-    const queryParams: any = {};
+  this.updateUrl();
+  this.filterChange.emit(this.selectedFilters);
+}
 
-    Object.keys(this.selectedFilters).forEach(key => {
-      const values = this.selectedFilters[key];
-      if (values.length > 0) queryParams[key] = values.join(',');
-    });
+updateUrl() {
+  const queryParams: any = {};
 
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
-  }
+  Object.keys(this.selectedFilters).forEach(key => {
+    const values = this.selectedFilters[key];
+    if (values?.length > 0) {
+      queryParams[key] = values.join(',');
+    }
+  });
+
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams,
+    // ❗️IMPORTANTE: no uses merge aquí,
+    // para que elimine params que ya no existen
+    queryParamsHandling: '',
+  });
+}
 
   isSelected(filterName: string, slug: string): boolean {
     return this.selectedFilters[filterName]?.includes(slug) ?? false;

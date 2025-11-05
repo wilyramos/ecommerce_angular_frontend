@@ -6,6 +6,7 @@ import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
 import { Header } from '../../components/header/header';
 import { CartSheet } from '../../features/cart/cart-sheet';
 import { FilterSheetComponent } from '../../features/sheet/filter-sheet';
+import { Footer } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-main-layout',
@@ -17,6 +18,7 @@ import { FilterSheetComponent } from '../../features/sheet/filter-sheet';
     MatSidenavModule,
     CartSheet,
     FilterSheetComponent,
+    Footer,
   ],
   templateUrl: './main-layout.html',
 })

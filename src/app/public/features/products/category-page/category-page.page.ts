@@ -18,8 +18,8 @@ import {
   lucideShoppingCart,
   lucideUsers,
   lucideStore,
-  lucideTags,       // → para Categorías
-  lucideBadgeCheck, // → para Marcas
+  lucideTags,
+  lucideBadgeCheck,
   lucideFilter,
   lucideSun,
 } from '@ng-icons/lucide';
@@ -95,35 +95,54 @@ export class CategoryPagePage implements OnInit {
     });
   }
 
-  loadProducts() {
-    this.isLoading = true;
-    this.error = null;
+   loadProducts() {
+  this.isLoading = true;
+  this.error = null;
 
-    const params = this.route.snapshot.queryParams;
-    this.page = +params['page'] || 1;
-    this.limit = +params['limit'] || 12;
+  const params = this.route.snapshot.queryParams;
 
-    const filterParams = {
-      page: this.page,
-      limit: this.limit,
-      filters: this.selectedFilters,
-      sort: this.sort,
-    };
+  // Page & limit
+  this.page = +params['page'] || 1;
+  this.limit = +params['limit'] || 12;
 
-    this.productService.findProductsByCategorySlug(this.slug, filterParams).subscribe({
-      next: (res) => {
-        this.products = res.data;
-        this.total = res.total;
-        this.totalPages = res.totalPages;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar productos:', err);
-        this.error = 'No se pudieron cargar los productos. Intenta nuevamente.';
-        this.isLoading = false;
-      },
-    });
+  // ✅ Convertir filtros URL → arrays
+  const filters: any = {};
+  Object.keys(params).forEach(key => {
+    if (['sort', 'page', 'limit'].includes(key)) return;
+    filters[key] = params[key].split(',');
+  });
+
+  // ✅ Convertir sort URL → sortBy + sortOrder
+  let sortBy = 'createdAt';
+  let sortOrder: 'asc' | 'desc' = 'desc';
+
+  if (params['sort']) {
+    const [field, order] = params['sort'].split('-');
+    sortBy = field === 'relevance' ? 'createdAt' : field;
+    sortOrder = order === 'asc' ? 'asc' : 'desc';
   }
+
+  this.productService.findProductsByCategorySlug(this.slug, {
+    page: this.page,
+    limit: this.limit,
+    categorias: [this.slug],
+    brand: filters.brand?.join(','),
+    sortBy,
+    sortOrder,
+  }).subscribe({
+    next: (res) => {
+      this.products = res.data;
+      this.total = res.total;
+      this.totalPages = res.totalPages;
+      this.isLoading = false;
+    },
+    error: () => {
+      this.error = 'No se pudieron cargar los productos.';
+      this.isLoading = false;
+    },
+  });
+}
+
 
   onPageChange(newPage: number) {
     this.page = newPage;
@@ -135,9 +154,20 @@ export class CategoryPagePage implements OnInit {
   }
 
   onFilterChange(newFilters: Record<string, string[]>) {
-    this.selectedFilters = newFilters;
-    this.loadProducts();
-  }
+  const queryParams: any = { page: 1 };
+
+  Object.keys(newFilters).forEach(key => {
+    if (newFilters[key].length > 0) {
+      queryParams[key] = newFilters[key].join(',');
+    }
+  });
+
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams,
+    queryParamsHandling: 'merge',
+  });
+}
 
   openFilterDrawer() {
     this.mainLayout.openFilterDrawer();
@@ -148,15 +178,13 @@ export class CategoryPagePage implements OnInit {
   }
 
   onSortChange(newSort: string) {
-    this.sort = newSort;
+  this.sort = newSort;
 
-    // Actualiza la URL con el nuevo sort, sin recargar la página
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { sort: this.sort, page: 1 }, // reset page al cambiar sort
-      queryParamsHandling: 'merge',
-    });
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams: { sort: this.sort, page: 1 },
+    queryParamsHandling: 'merge',
+  });
+}
 
-    this.loadProducts();
-  }
 }

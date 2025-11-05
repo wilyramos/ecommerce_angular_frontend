@@ -3,7 +3,7 @@
     #filterDrawer
     position="start"
     mode="over"
-    class="w-full sm:w-96 max-w-full bg-white shadow-2xl"
+    class="w-full sm:w-96 max-w-full shadow-2xl"
   >
     <app-filter-sheet (close)="closeFilterDrawer()"></app-filter-sheet>
   </mat-drawer>
@@ -13,7 +13,7 @@
     #cartDrawer
     position="end"
     mode="over"
-    class="w-80 shadow-xl bg-white"
+    class="w-80 shadow-xl"
   >
     <app-cart-sheet></app-cart-sheet>
   </mat-drawer>
@@ -25,8 +25,10 @@
       (openFilterDrawer)="openFilterDrawer()"
     ></app-header>
 
-    <main class="flex-grow bg-white">
+    <main class="">
       <router-outlet></router-outlet>
     </main>
+        <app-footer></app-footer>
+
   </mat-drawer-content>
 </mat-drawer-container>

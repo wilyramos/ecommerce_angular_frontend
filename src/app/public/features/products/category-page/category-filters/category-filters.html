@@ -3,26 +3,21 @@
 
     <div class="flex flex-wrap items-center gap-2 flex-1">
       @for (filter of filters; track filter.name) {
-        @for (value of filter.values; track value.slug) {
-          <button
-            (click)="toggleFilter(filter.name, value.slug)"
-            class="px-3 py-2 text-sm border rounded-md transition border-gray-400 cursor-pointer
-                  hover:bg-gray-100
-                  [class.bg-blue-600]='isSelected(filter.name, value.slug)'
-                  [class.text-white]='isSelected(filter.name, value.slug)'
-                  [class.border-blue-600]='isSelected(filter.name, value.slug)'"
-          >
-            {{ value.name }}
-          </button>
-        }
+      @for (value of filter.values; track value.slug) {
+      <button (click)="toggleFilter(filter.name, value.slug)" class="px-3 py-1.5 text-sm rounded-md border-2 transition cursor-pointer
+         hover:bg-gray-100
+         flex items-center gap-2" [ngClass]="{
+    'border-black font-medium ': isSelected(filter.name, value.slug),
+    'border-gray-300 text-gray-700 bg-white': !isSelected(filter.name, value.slug)
+  }">
+        {{ value.name }}
+      </button>
+      }
       }
     </div>
 
-    <button
-      class="text-sm hover:underline whitespace-nowrap cursor-pointer"
-      (click)="clearAll()"
-    >
-      Limpiar todo
+    <button class="text-xs hover:underline whitespace-nowrap cursor-pointer" (click)="clearAll()">
+      Limpiar filtros
     </button>
   </div>
 </div>

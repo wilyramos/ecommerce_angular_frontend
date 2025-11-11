@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, inject, effect } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CartSheetComponent } from '../../features/cart/cart-sheet';
+import { CartStore } from '../../features/cart/store/cart.store';
 
 @Component({
   selector: 'app-header',
@@ -31,23 +32,29 @@ import { CartSheetComponent } from '../../features/cart/cart-sheet';
     CartSheetComponent
   ],
   templateUrl: './header.html',
-
 })
 export class Header {
   public categoryService = new CategoryService();
 
-  // Cart
   @ViewChild('cartSheet') cartSheet!: CartSheetComponent;
+  private dialog = inject(MatDialog);
+  private cartStore = inject(CartStore);
 
-  cartItemCount = 3;
+  cartItemCount = 0;
   favoritesItemCount = 5;
   isLoggedIn = false;
 
   categoriesRoot: any[] = [];
-  selectedCategory: any | null = null; // categoría root seleccionada
+  selectedCategory: any | null = null;
 
-  private dialog = inject(MatDialog);
   @Output() openCart = new EventEmitter<void>();
+
+  constructor() {
+    // Mantiene el contador sincronizado con el store
+    effect(() => {
+      this.cartItemCount = this.cartStore.totalItems();
+    });
+  }
 
   openCartSheet() {
     this.cartSheet.toggle();
@@ -58,12 +65,9 @@ export class Header {
   }
 
   loadCategories() {
-    // Usamos getTreeCategories para recibir la jerarquía completa
     this.categoryService.getTreeCategories().subscribe({
       next: (data) => {
-        // Solo guardamos las root (las que no tienen parentCategory)
         this.categoriesRoot = data.filter(cat => !cat.parentCategory);
-        // Seleccionamos por defecto la primera
         if (this.categoriesRoot.length > 0) {
           this.selectedCategory = this.categoriesRoot[0];
         }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +12,7 @@ import { Category as CategoryService } from '../../features/categories/category'
 import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { CartSheetComponent } from '../../features/cart/cart-sheet';
 
 @Component({
   selector: 'app-header',
@@ -26,13 +27,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     CommonModule,
     RouterModule,
     MatSelectModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    CartSheetComponent
   ],
   templateUrl: './header.html',
 
 })
 export class Header {
   public categoryService = new CategoryService();
+
+  // Cart
+  @ViewChild('cartSheet') cartSheet!: CartSheetComponent;
 
   cartItemCount = 3;
   favoritesItemCount = 5;
@@ -43,6 +48,10 @@ export class Header {
 
   private dialog = inject(MatDialog);
   @Output() openCart = new EventEmitter<void>();
+
+  openCartSheet() {
+    this.cartSheet.toggle();
+  }
 
   ngOnInit() {
     this.loadCategories();
@@ -72,9 +81,5 @@ export class Header {
       width: '400px',
       autoFocus: false,
     });
-  }
-
-  openCartSheet(): void {
-    this.openCart.emit();
   }
 }

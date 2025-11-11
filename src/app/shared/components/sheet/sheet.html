@@ -1,0 +1,24 @@
+<div
+  id="sheet-backdrop"
+  *ngIf="isVisible"
+  (click)="onBackdropClick($event)"
+  class="fixed inset-0 z-99 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+  [class.opacity-100]="open"
+  [class.opacity-0]="!open"
+>
+  <div
+    class="fixed right-0 top-0 h-full w-80 sm:w-96 bg-white shadow-2xl z-100 rounded-l-2xl transform transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+    [class.translate-x-0]="open"
+    [class.translate-x-full]="!open"
+  >
+    <header class="p-4 flex justify-between items-center border-b">
+      <h2 class="text-lg font-semibold">Cart</h2>
+      <button (click)="closeSheet()" class="text-gray-500 hover:text-black">✕</button>
+    </header>
+
+    hola
+    <div class="p-4 overflow-y-auto h-[calc(100%-64px)]">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

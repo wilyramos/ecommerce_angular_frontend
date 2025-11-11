@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { PublicProductService } from '../../../../services/public-product.service';
 import type { PopulatedProduct, ProductVariant } from '@shared/models/product.model';
+import { CartStore } from '../../cart/store/cart.store';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-product-detail',
@@ -25,6 +27,9 @@ export class ProductDetailPage implements OnInit {
   selectedTalla?: string;
 
   currentIndex = 0;
+
+  store = inject(CartStore);
+
 
   constructor(
     private productService: PublicProductService,
@@ -206,15 +211,30 @@ export class ProductDetailPage implements OnInit {
   }
 
   /** Añadir al carrito */
-  addToCart(): void {
-    if (!this.selectedVariant || this.selectedVariant.stock === 0) return;
-    console.log('Añadiendo al carrito:', {
-      sku: this.selectedVariant.sku,
-      productId: this.product?._id,
-      quantity: 1,
-    });
-  }
 
+  addToCart(): void {
+  if (!this.product || !this.selectedVariant) return;
+
+  const variant: ProductVariant = this.selectedVariant;
+  if (variant.stock <= 0) return;
+
+  this.store.add({
+    id: `${this.product._id}-${variant.sku}`,
+    productId: this.product._id!,
+    name: this.product.name,
+    price: variant.salePrice ?? variant.price,
+    image: this.selectedImage || '',
+    qty: 1,
+    variant: {
+      sku: variant.sku,
+      attributes: variant.attributes,
+      price: variant.price,
+      salePrice: variant.salePrice,
+    },
+  });
+
+  console.log('Added to cart:', this.product.name, variant.sku);
+}
   /** Navegación en carrusel */
   nextImage(): void {
     const total = this.getDisplayedImages().length;

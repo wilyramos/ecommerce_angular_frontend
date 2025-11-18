@@ -8,13 +8,9 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { of, switchMap } from 'rxjs';
 
@@ -23,15 +19,7 @@ import { ProductBase, type PopulatedProduct } from '../../../../shared/models/pr
 import { Category, CategoryAttribute } from '../../../../shared/models/category.model';
 import { Brand } from '../../../../shared/models/brand.model';
 import { AdminProduct } from '../admin-product';
-
-// --- NUEVOS MÓDULOS DE MATERIAL ---
-import { MatCardModule } from '@angular/material/card';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-product-form',
@@ -41,18 +29,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
-    MatSelectModule,
-    MatInputModule,
     MatDialogModule,
-    MatSlideToggleModule,
     MatSnackBarModule,
-    MatCardModule,
-    MatExpansionModule,
-    MatDividerModule,
-    // --- MÓDULOS AÑADIDOS ---
-    MatTooltipModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
+    MatSlideToggleModule,
   ],
   templateUrl: './product-form.html',
 })
@@ -94,7 +73,7 @@ export class ProductFormComponent implements OnInit {
       this.selectedCategory = this.data.categories.find(
         (cat) => cat._id === categoryId
       );
-      //Solo actualizar los atributos que tengan isVariant = true
+      // Solo actualizar los atributos que tengan isVariant = true
       this.updateAllVariantsAttributes(this.selectedCategory);
       this.setFilterAttributes(this.selectedCategory);
     });
@@ -105,13 +84,11 @@ export class ProductFormComponent implements OnInit {
     }
   }
 
-
   // ========= Getters =========
   get variants(): FormArray {
     return this.form.get('variants') as FormArray;
   }
 
-  // Obtenemos el FormArray de atributos de una variante específica
   getAttributesArray(variantIndex: number): FormArray {
     return this.variants.at(variantIndex).get('attributes') as FormArray;
   }
@@ -120,27 +97,16 @@ export class ProductFormComponent implements OnInit {
     return this.variants.at(variantIndex).get('images') as FormControl;
   }
 
-  // Se elimina 'handleCategoryChange' ya que la lógica se centraliza en el valueChanges
-
   /**
    * Actualiza los atributos de TODAS las variantes basándose en la categoría seleccionada.
-   * @param category Categoría seleccionada o undefined.
    */
   updateAllVariantsAttributes(category: Category | undefined): void {
-    // poner los atributos solo las que son isVariant = true
     const variantAttributes = category?.attributes?.filter(attr => attr.isVariant) || [];
     this.variants.controls.forEach((_, index) => {
       this.setVariantAttributes(index, variantAttributes);
     });
   }
 
-
-  /**
-   * Rellena el FormArray de atributos para una variante.
-   * La **clave** del atributo ahora se llama `key` para coincidir con el Backend DTO.
-   * @param variantIndex Índice de la variante a actualizar.
-   * @param categoryAttributes Atributos definidos en la categoría.
-   */
   private setVariantAttributes(variantIndex: number, categoryAttributes: CategoryAttribute[]): void {
     const attributesArray = this.getAttributesArray(variantIndex);
 
@@ -149,18 +115,16 @@ export class ProductFormComponent implements OnInit {
       attributesArray.removeAt(0);
     }
 
-    // 2. Rellenar el FormArray con los atributos de la categoría
+    // 2. Rellenar el FormArray
     categoryAttributes.forEach(attr => {
-      // Creamos un FormGroup para cada atributo
       const attrGroup = this.fb.group({
         key: [{ value: attr.name, disabled: true }],
-        value: [''],  // ahora es opcional
+        value: [''],
         possibleValues: [attr.values || []],
       });
       attributesArray.push(attrGroup);
     });
   }
-
 
   // ========= Métodos de Variantes =========
   addVariant(): void {
@@ -174,7 +138,6 @@ export class ProductFormComponent implements OnInit {
 
     this.variants.push(variantGroup);
 
-    // Si ya hay una categoría seleccionada, aplicar sus atributos a la nueva variante
     if (this.selectedCategory) {
       this.setVariantAttributes(this.variants.length - 1, this.selectedCategory.attributes || []);
     }
@@ -215,75 +178,77 @@ export class ProductFormComponent implements OnInit {
 
   // ========= Guardar producto =========
   onSave(): void {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    this.snackBar.open('Por favor completa todos los campos obligatorios.', 'Cerrar', {
-      duration: 3000,
-      panelClass: ['bg-red-600', 'text-white'],
-    });
-    return;
-  }
-
-  const allFilesToUpload: File[] = Array.from(this.filesToUpload.values()).flat();
-
-  const upload$ = allFilesToUpload.length > 0
-    ? this.productService.uploadImages(allFilesToUpload)
-    : of({ urls: [] });
-
-  upload$.pipe(
-    switchMap((uploadResult: any) => {
-      const uploadedUrls = Array.isArray(uploadResult)
-        ? uploadResult.map((file: any) => file.url)
-        : uploadResult.urls ?? [];
-
-      const formValue = this.form.getRawValue();
-      let urlIdx = 0;
-
-      const payload: ProductBase = {
-        ...formValue,
-        filterAttributes: this.filterValidAttributes(formValue.filterAttributes),
-
-        variants: (formValue.variants || []).map((variant: any, index: number) => {
-          const newFilesCount = this.filesToUpload.get(index)?.length || 0;
-          const newUrlsForVariant = uploadedUrls.slice(urlIdx, urlIdx + newFilesCount);
-          urlIdx += newFilesCount;
-
-          // 🔹 Tomar solo URLs válidas (strings que comiencen con http o https)
-          const existingUrls = (variant.images || []).filter(
-            (url: string) => typeof url === 'string' && /^https?:\/\//.test(url)
-          );
-
-          return {
-            ...variant,
-            images: [...existingUrls, ...newUrlsForVariant],
-            attributes: this.filterValidAttributes(variant.attributes),
-          };
-        }),
-      };
-
-      return this.isEditMode && this.data.product?._id
-        ? this.productService.updateProduct(this.data.product._id, payload)
-        : this.productService.createProduct(payload);
-    })
-  ).subscribe({
-    next: () => {
-      this.snackBar.open(
-        this.isEditMode ? 'Producto actualizado correctamente.' : 'Producto creado correctamente.',
-        'Cerrar',
-        { duration: 3000, panelClass: ['bg-green-600', 'text-white'] }
-      );
-      this.dialogRef.close(true);
-    },
-    error: (err) => {
-      this.snackBar.open('Error al crear producto. Revisa la consola.', 'Cerrar', {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.snackBar.open('Por favor completa todos los campos obligatorios.', 'Cerrar', {
         duration: 3000,
         panelClass: ['bg-red-600', 'text-white'],
       });
-      console.error('Error al crear producto:', err);
-    },
-  });
-}
+      return;
+    }
 
+    this.isSaving = true; // Activar spinner manual
+
+    const allFilesToUpload: File[] = Array.from(this.filesToUpload.values()).flat();
+
+    const upload$ = allFilesToUpload.length > 0
+      ? this.productService.uploadImages(allFilesToUpload)
+      : of({ urls: [] });
+
+    upload$.pipe(
+      switchMap((uploadResult: any) => {
+        const uploadedUrls = Array.isArray(uploadResult)
+          ? uploadResult.map((file: any) => file.url)
+          : uploadResult.urls ?? [];
+
+        const formValue = this.form.getRawValue();
+        let urlIdx = 0;
+
+        const payload: ProductBase = {
+          ...formValue,
+          filterAttributes: this.filterValidAttributes(formValue.filterAttributes),
+
+          variants: (formValue.variants || []).map((variant: any, index: number) => {
+            const newFilesCount = this.filesToUpload.get(index)?.length || 0;
+            const newUrlsForVariant = uploadedUrls.slice(urlIdx, urlIdx + newFilesCount);
+            urlIdx += newFilesCount;
+
+            const existingUrls = (variant.images || []).filter(
+              (url: string) => typeof url === 'string' && /^https?:\/\//.test(url)
+            );
+
+            return {
+              ...variant,
+              images: [...existingUrls, ...newUrlsForVariant],
+              attributes: this.filterValidAttributes(variant.attributes),
+            };
+          }),
+        };
+
+        return this.isEditMode && this.data.product?._id
+          ? this.productService.updateProduct(this.data.product._id, payload)
+          : this.productService.createProduct(payload);
+      })
+    ).subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.snackBar.open(
+          this.isEditMode ? 'Producto actualizado correctamente.' : 'Producto creado correctamente.',
+          'Cerrar',
+          { duration: 3000, panelClass: ['bg-green-600', 'text-white'] }
+        );
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        this.isSaving = false;
+        this.snackBar.open('Error al guardar producto.', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['bg-red-600', 'text-white'],
+        });
+        console.error('Error:', err);
+      },
+    });
+  }
 
   close(): void {
     this.dialogRef.close(false);
@@ -297,12 +262,10 @@ export class ProductFormComponent implements OnInit {
     const attributes = category?.attributes?.filter(attr => attr.isFilter) || [];
     const filterAttributesArray = this.filterAttributes;
 
-    // clear existing
     while (filterAttributesArray.length !== 0) {
       filterAttributesArray.removeAt(0);
     }
 
-    // add new
     attributes.forEach(attr => {
       const attrGroup = this.fb.group({
         key: [{ value: attr.name, disabled: true }],
@@ -312,7 +275,6 @@ export class ProductFormComponent implements OnInit {
       filterAttributesArray.push(attrGroup);
     });
   }
-
 
   private filterValidAttributes(attrs: any[]): any[] {
     return (attrs || [])
@@ -346,7 +308,7 @@ export class ProductFormComponent implements OnInit {
       filterAttrsArray.push(group);
     });
 
-    // 🔹 Variantes
+    // Variantes
     const variantsArray = this.variants;
     while (variantsArray.length !== 0) variantsArray.removeAt(0);
     (product.variants || []).forEach(variant => {
@@ -371,5 +333,4 @@ export class ProductFormComponent implements OnInit {
       variantsArray.push(variantGroup);
     });
   }
-
 }

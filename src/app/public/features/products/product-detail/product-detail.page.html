@@ -166,3 +166,17 @@
     </div>
   </div>
 }
+
+@if (relatedProducts.length > 0) {
+ <section class="mt-16">
+    <h2 class="text-xl font-semibold mb-6 text-gray-900">
+      También te puede interesar
+    </h2>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+      @for (item of relatedProducts; track item._id) {
+        <app-product-card [product]="item"></app-product-card>
+      }
+    </div>
+  </section>
+}

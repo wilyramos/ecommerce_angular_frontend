@@ -5,10 +5,11 @@ import { PublicProductService } from '../../../../services/public-product.servic
 import type { PopulatedProduct, ProductVariant } from '@shared/models/product.model';
 import { CartStore } from '../../cart/store/cart.store';
 import { inject } from '@angular/core';
+import { ProductCard } from '@shared/components/product-card/product-card';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CommonModule],
+  imports: [CommonModule, ProductCard],
   templateUrl: './product-detail.page.html',
   styleUrl: './product-detail.page.css',
 })
@@ -28,16 +29,17 @@ export class ProductDetailPage implements OnInit {
 
   currentIndex = 0;
 
+  relatedProducts: PopulatedProduct[] = [];
+
   store = inject(CartStore);
 
 
   constructor(
     private productService: PublicProductService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    // Products in the cart
     const slug = this.route.snapshot.paramMap.get('slug');
     if (!slug) {
       this.errorMessage = 'No se especificó ningún producto.';
@@ -62,6 +64,9 @@ export class ProductDetailPage implements OnInit {
           this.populateTallasForColorlessVariants();
         }
 
+        /** 👉 Cargar productos relacionados */
+        this.loadRelatedProducts(foundProduct._id!);
+
         this.isLoading = false;
       },
       error: (error) => {
@@ -71,6 +76,7 @@ export class ProductDetailPage implements OnInit {
       },
     });
   }
+
 
   /** Extrae colores únicos de las variantes */
   private setupVariantSelectors(): void {
@@ -177,6 +183,20 @@ export class ProductDetailPage implements OnInit {
     this.selectedImage = firstVariant?.images?.[0];
   }
 
+  private loadRelatedProducts(productId: string): void {
+    this.productService.getRelatedProducts(productId).subscribe({
+      next: (products) => {
+        /** Evitar incluir el mismo producto */
+        this.relatedProducts = products.filter(p => p._id !== productId);
+      },
+      error: (err) => {
+        console.error('Error al cargar productos relacionados:', err);
+        this.relatedProducts = [];
+      }
+    });
+  }
+
+
   /** Devuelve imágenes a mostrar (de la variante o combinadas) */
   getDisplayedImages(): string[] {
     if (this.selectedVariant?.images?.length) return this.selectedVariant.images;
@@ -210,6 +230,8 @@ export class ProductDetailPage implements OnInit {
     });
     return variant ? variant.stock === 0 : true;
   }
+
+
 
   /** Añadir al carrito */
 

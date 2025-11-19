@@ -1,22 +1,26 @@
-<div class="">
+<div class="w-full">
   <div class="flex flex-wrap items-center justify-between gap-4 py-2">
 
-    <div class="flex flex-wrap items-center gap-2 flex-1">
+    <div class="flex flex-wrap items-center gap-2 flex-1 min-w-[200px]">
       @for (filter of filters; track filter.name) {
       @for (value of filter.values; track value.slug) {
-      <button (click)="toggleFilter(filter.name, value.slug)" class="px-3 py-1.5 text-sm rounded-md border-2 transition cursor-pointer
-         hover:bg-gray-100
-         flex items-center gap-2" [ngClass]="{
-    'border-black font-medium ': isSelected(filter.name, value.slug),
-    'border-gray-300 text-gray-700 bg-white': !isSelected(filter.name, value.slug)
-  }">
+      <button
+        (click)="toggleFilter(filter.name, value.slug)"
+        class="px-3 py-1.5 text-sm rounded-md border-2 transition cursor-pointer hover:bg-gray-100 flex items-center gap-2
+               max-sm:px-2 max-sm:py-1 max-sm:text-xs"
+        [ngClass]="{
+          'border-black font-medium': isSelected(filter.name, value.slug),
+          'border-gray-300 text-gray-700 bg-white': !isSelected(filter.name, value.slug)
+        }">
         {{ value.name }}
       </button>
       }
       }
     </div>
 
-    <button class="text-xs hover:underline whitespace-nowrap cursor-pointer" (click)="clearAll()">
+    <button
+      class="text-xs hover:underline whitespace-nowrap cursor-pointer max-sm:w-full max-sm:text-center"
+      (click)="clearAll()">
       Limpiar filtros
     </button>
   </div>

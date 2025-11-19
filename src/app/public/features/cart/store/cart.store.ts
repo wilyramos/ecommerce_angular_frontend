@@ -1,10 +1,12 @@
-import { Injectable, signal, computed, effect, PLATFORM_ID, inject } from '@angular/core';
+// File: frontend/src/app/store/cart.store.ts
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import type { ProductAttribute } from '@shared/models/product.model';
+import { PLATFORM_ID } from '@angular/core';
+import { CartApiService } from 'src/app/services/cart-api.service';
 
 export interface CartVariant {
   sku: string;
-  attributes: ProductAttribute[];
+  attributes: any[];
   price: number;
   salePrice?: number | null;
 }
@@ -19,14 +21,12 @@ export interface CartItem {
   variant: CartVariant;
 }
 
-const CART_KEY = 'app_cart_v1';
-
 @Injectable({ providedIn: 'root' })
 export class CartStore {
+  private api = inject(CartApiService);
   private platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
 
-  private items = signal<CartItem[]>(this.loadFromStorage());
+  private items = signal<CartItem[]>([]);
   opened = signal(false);
 
   readonly totalItems = computed(() =>
@@ -38,28 +38,54 @@ export class CartStore {
   );
 
   constructor() {
-    if (this.isBrowser) {
-      effect(() => {
-        const current = this.items();
-        try {
-          localStorage.setItem(CART_KEY, JSON.stringify(current));
-        } catch (err) {
-          console.warn('Error saving cart to localStorage', err);
-        }
-      });
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadFromBackend();
     }
   }
 
-  private loadFromStorage(): CartItem[] {
-    if (!this.isBrowser) return [];
-    try {
-      const raw = localStorage.getItem(CART_KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
+  private getSessionId(): string {
+    if (!isPlatformBrowser(this.platformId)) return '';
+
+    const key = 'cart_session_id';
+    let id = localStorage.getItem(key);
+
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem(key, id);
     }
+
+    return id;
+  }
+
+  private loadFromBackend() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const sessionId = this.getSessionId();
+    if (!sessionId) return;
+
+    this.api.getCart(sessionId).subscribe((cart: any) => {
+      if (!cart || !Array.isArray(cart.items)) {
+        this.items.set([]);
+        return;
+      }
+
+      const mapped: CartItem[] = cart.items.map((i: any) => ({
+        id: `${i.productId}-${i.sku}`,
+        productId: i.productId,
+        name: i.name ?? '',
+        price: i.priceSnapshot,
+        image: i.images?.[0] ?? '',
+        qty: i.quantity,
+        variant: {
+          sku: i.sku,
+          attributes: i.attributes ?? [],
+          price: i.priceSnapshot,
+          salePrice: null
+        }
+      }));
+
+      this.items.set(mapped);
+    });
   }
 
   get all() {
@@ -67,35 +93,63 @@ export class CartStore {
   }
 
   add(item: CartItem) {
-    const current = this.items();
-    const existing = current.find(i => i.id === item.id);
+    if (!isPlatformBrowser(this.platformId)) return;
 
-    if (existing) {
-      this.items.update(items =>
-        items.map(i =>
-          i.id === item.id ? { ...i, qty: i.qty + item.qty } : i
-        )
-      );
-    } else {
-      this.items.update(items => [...items, item]);
-    }
+    const sessionId = this.getSessionId();
 
-    this.opened.set(true);
+    this.api
+      .addItem(
+        {
+          productId: item.productId,
+          sku: item.variant.sku,
+          quantity: item.qty
+        },
+        sessionId
+      )
+      .subscribe(() => {
+        this.loadFromBackend();
+        this.opened.set(true);
+      });
   }
 
   updateQty(id: string, qty: number) {
-    this.items.update(items =>
-      items.map(i => (i.id === id ? { ...i, qty } : i))
-    );
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const item = this.items().find(i => i.id === id);
+    if (!item) return;
+
+    const sessionId = this.getSessionId();
+
+    this.api
+      .updateQty(item.productId, item.variant.sku, qty, sessionId)
+      .subscribe(() => {
+        this.loadFromBackend();
+      });
   }
 
   remove(id: string) {
-    this.items.update(items => items.filter(i => i.id !== id));
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const item = this.items().find(i => i.id === id);
+    if (!item) return;
+
+    const sessionId = this.getSessionId();
+
+    this.api
+      .remove(item.productId, item.variant.sku, sessionId)
+      .subscribe(() => {
+        this.loadFromBackend();
+      });
   }
 
   clear() {
-    this.items.set([]);
-    if (this.isBrowser) localStorage.removeItem(CART_KEY);
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const sessionId = this.getSessionId();
+
+    this.api.clear(sessionId).subscribe(() => {
+      this.items.set([]);
+    });
   }
 
   open() {

@@ -37,6 +37,7 @@ export class ProductDetailPage implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Products in the cart
     const slug = this.route.snapshot.paramMap.get('slug');
     if (!slug) {
       this.errorMessage = 'No se especificó ningún producto.';
@@ -213,28 +214,26 @@ export class ProductDetailPage implements OnInit {
   /** Añadir al carrito */
 
   addToCart(): void {
-  if (!this.product || !this.selectedVariant) return;
+    if (!this.product || !this.selectedVariant) return;
 
-  const variant: ProductVariant = this.selectedVariant;
-  if (variant.stock <= 0) return;
+    const variant: ProductVariant = this.selectedVariant;
+    if (variant.stock <= 0) return;
 
-  this.store.add({
-    id: `${this.product._id}-${variant.sku}`,
-    productId: this.product._id!,
-    name: this.product.name,
-    price: variant.salePrice ?? variant.price,
-    image: this.selectedImage || '',
-    qty: 1,
-    variant: {
-      sku: variant.sku,
-      attributes: variant.attributes,
-      price: variant.price,
-      salePrice: variant.salePrice,
-    },
-  });
-
-  console.log('Added to cart:', this.product.name, variant.sku);
-}
+    this.store.add({
+      id: `${this.product._id}-${variant.sku}`,
+      productId: this.product._id!,
+      name: this.product.name,
+      price: variant.salePrice ?? variant.price,
+      image: this.selectedImage || '',
+      qty: 1,
+      variant: {
+        sku: variant.sku,
+        attributes: variant.attributes,
+        price: variant.price,
+        salePrice: variant.salePrice,
+      },
+    });
+  }
   /** Navegación en carrusel */
   nextImage(): void {
     const total = this.getDisplayedImages().length;

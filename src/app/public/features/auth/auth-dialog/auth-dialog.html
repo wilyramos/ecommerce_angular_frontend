@@ -1,37 +1,26 @@
-
 <mat-dialog-content class="px-6 pt-4">
   <mat-tab-group class="w-full">
     <!-- ================== LOGIN ================== -->
     <mat-tab label="Inicia Sesión">
-      <form
-        [formGroup]="loginForm"
-        (ngSubmit)="onLogin()"
-        class="space-y-5 py-6 px-2"
-      >
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5 py-6 px-2">
         <!-- EMAIL -->
         <div>
           <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">
             Correo
           </label>
-          <input
-            id="loginEmail"
-            type="email"
-            formControlName="email"
-            placeholder="ejemplo@correo.com"
-            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
-          />
-          <p
-            *ngIf="isInvalidField(loginForm, 'email') && loginForm.get('email')?.hasError('required')"
-            class="text-red-500 text-sm mt-1"
-          >
+          <input id="loginEmail" type="email" formControlName="email" placeholder="ejemplo@correo.com"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2" />
+
+          @if (isInvalidField(loginForm, 'email') && loginForm.get('email')?.hasError('required')) {
+          <p class="text-red-500 text-sm mt-1">
             El correo es requerido.
           </p>
-          <p
-            *ngIf="isInvalidField(loginForm, 'email') && loginForm.get('email')?.hasError('email')"
-            class="text-red-500 text-sm mt-1"
-          >
+          }
+          @if (isInvalidField(loginForm, 'email') && loginForm.get('email')?.hasError('email')) {
+          <p class="text-red-500 text-sm mt-1">
             Formato de correo inválido.
           </p>
+          }
         </div>
 
         <!-- PASSWORD -->
@@ -39,41 +28,31 @@
           <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">
             Contraseña
           </label>
-          <input
-            id="loginPassword"
-            type="password"
-            formControlName="password"
-            placeholder="••••••••"
-            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
-          />
-          <p
-            *ngIf="isInvalidField(loginForm, 'password') && loginForm.get('password')?.hasError('required')"
-            class="text-red-500 text-sm mt-1"
-          >
+          <input id="loginPassword" type="password" formControlName="password" placeholder="••••••••"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2" />
+          <p *ngIf="isInvalidField(loginForm, 'password') && loginForm.get('password')?.hasError('required')"
+            class="text-red-500 text-sm mt-1">
             La contraseña es requerida.
           </p>
         </div>
 
         <!-- ERROR GENERAL -->
-        <div *ngIf="errorMessage" class="text-red-500 text-sm text-center">
+
+        @if (errorMessage) {
+        <div class="text-red-500 text-sm text-center">
           {{ errorMessage }}
         </div>
+        }
 
         <!-- BOTONES -->
         <div class="flex justify-end gap-3 mt-4">
-          <button
-            type="button"
-            mat-dialog-close
-            class="rounded-lg px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
-          >
+          <button type="button" mat-dialog-close
+            class="rounded-lg px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition">
             Cancelar
           </button>
 
-          <button
-            type="submit"
-            [disabled]="loginForm.invalid || isLoading"
-            class="rounded-lg bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition"
-          >
+          <button type="submit" [disabled]="loginForm.invalid || isLoading"
+            class="rounded-lg bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition">
             <span *ngIf="!isLoading">Iniciar Sesión</span>
             <span *ngIf="isLoading">Cargando...</span>
           </button>
@@ -83,27 +62,16 @@
 
     <!-- ================== REGISTRO ================== -->
     <mat-tab label="Regístrate">
-      <form
-        [formGroup]="registerForm"
-        (ngSubmit)="onRegister()"
-        class="space-y-5 py-6 px-2"
-      >
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="space-y-5 py-6 px-2">
         <!-- NAME -->
         <div>
           <label for="registerName" class="block text-sm font-medium text-gray-700 mb-1">
             Nombre
           </label>
-          <input
-            id="registerName"
-            type="text"
-            formControlName="name"
-            placeholder="Juan Pérez"
-            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
-          />
-          <p
-            *ngIf="isInvalidField(registerForm, 'name') && registerForm.get('name')?.hasError('required')"
-            class="text-red-500 text-sm mt-1"
-          >
+          <input id="registerName" type="text" formControlName="name" placeholder="Juan Pérez"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2" />
+          <p *ngIf="isInvalidField(registerForm, 'name') && registerForm.get('name')?.hasError('required')"
+            class="text-red-500 text-sm mt-1">
             El nombre es requerido.
           </p>
         </div>
@@ -113,23 +81,14 @@
           <label for="registerEmail" class="block text-sm font-medium text-gray-700 mb-1">
             Correo
           </label>
-          <input
-            id="registerEmail"
-            type="email"
-            formControlName="email"
-            placeholder="ejemplo@correo.com"
-            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
-          />
-          <p
-            *ngIf="isInvalidField(registerForm, 'email') && registerForm.get('email')?.hasError('required')"
-            class="text-red-500 text-sm mt-1"
-          >
+          <input id="registerEmail" type="email" formControlName="email" placeholder="ejemplo@correo.com"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2" />
+          <p *ngIf="isInvalidField(registerForm, 'email') && registerForm.get('email')?.hasError('required')"
+            class="text-red-500 text-sm mt-1">
             El correo es requerido.
           </p>
-          <p
-            *ngIf="isInvalidField(registerForm, 'email') && registerForm.get('email')?.hasError('email')"
-            class="text-red-500 text-sm mt-1"
-          >
+          <p *ngIf="isInvalidField(registerForm, 'email') && registerForm.get('email')?.hasError('email')"
+            class="text-red-500 text-sm mt-1">
             Formato de correo inválido.
           </p>
         </div>
@@ -139,23 +98,14 @@
           <label for="registerPassword" class="block text-sm font-medium text-gray-700 mb-1">
             Contraseña
           </label>
-          <input
-            id="registerPassword"
-            type="password"
-            formControlName="password"
-            placeholder="••••••••"
-            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2"
-          />
-          <p
-            *ngIf="isInvalidField(registerForm, 'password') && registerForm.get('password')?.hasError('required')"
-            class="text-red-500 text-sm mt-1"
-          >
+          <input id="registerPassword" type="password" formControlName="password" placeholder="••••••••"
+            class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-900 focus:outline-none px-4 py-2" />
+          <p *ngIf="isInvalidField(registerForm, 'password') && registerForm.get('password')?.hasError('required')"
+            class="text-red-500 text-sm mt-1">
             La contraseña es requerida.
           </p>
-          <p
-            *ngIf="isInvalidField(registerForm, 'password') && registerForm.get('password')?.hasError('minlength')"
-            class="text-red-500 text-sm mt-1"
-          >
+          <p *ngIf="isInvalidField(registerForm, 'password') && registerForm.get('password')?.hasError('minlength')"
+            class="text-red-500 text-sm mt-1">
             La contraseña debe tener al menos 6 caracteres.
           </p>
         </div>
@@ -167,19 +117,13 @@
 
         <!-- BOTONES -->
         <div class="flex justify-end gap-3 mt-4">
-          <button
-            type="button"
-            mat-dialog-close
-            class="rounded-lg px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
-          >
+          <button type="button" mat-dialog-close
+            class="rounded-lg px-6 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 transition">
             Cancelar
           </button>
 
-          <button
-            type="submit"
-            [disabled]="registerForm.invalid || isLoading"
-            class="rounded-lg bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition"
-          >
+          <button type="submit" [disabled]="registerForm.invalid || isLoading"
+            class="rounded-lg bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 px-8 py-2 transition">
             <span *ngIf="!isLoading">Registrarme</span>
             <span *ngIf="isLoading">Registrando...</span>
           </button>

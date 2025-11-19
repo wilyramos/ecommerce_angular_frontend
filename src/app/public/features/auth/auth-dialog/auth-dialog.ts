@@ -41,14 +41,18 @@ export class AuthDialog {
   private snackBar = inject(MatSnackBar);
   private tokenService = inject(TokenService);
 
+  // Initial email for demo purposes
+  public demoEmail = '1@correo.com';
+  public demoPassword = 'password';
+
 
   public isLoading = false;
   public errorMessage: string | null = null;
 
   // Formularios
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
+    email: [this.demoEmail, [Validators.required, Validators.email]],
+    password: [this.demoPassword, [Validators.required]],
   });
 
   registerForm = this.fb.nonNullable.group({

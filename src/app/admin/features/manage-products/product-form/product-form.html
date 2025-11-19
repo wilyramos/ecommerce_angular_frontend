@@ -9,48 +9,42 @@
 <mat-dialog-content class="max-h-[90vh]">
   <form [formGroup]="form" class="space-y-6  bg-gray-50">
 
-    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-      <div class="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
-        <h2 class="text-lg font-semibold text-gray-800">Información Básica</h2>
+    <div class="">
+      <div class="flex items-center gap-2 mb-6 border-gray-300 border-b-2 ">
+        <h2 class="text-lg font-mediu">Información Básica</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         <div class="md:col-span-2 space-y-1">
           <label class="block text-sm font-medium text-gray-700">Nombre del producto</label>
-          <input
-            type="text"
-            formControlName="name"
-            placeholder="Ej: Zapatillas Speed 2.0 Knit Negras"
+          <input type="text" formControlName="name" placeholder="Ej: Zapatillas Speed 2.0 Knit Negras"
             class="w-full rounded-lg border-gray-300 border px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-primary-500 focus:outline-none transition-colors"
-            [class.border-red-500]="form.get('name')?.invalid && form.get('name')?.touched"
-          />
-          <p *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched" class="text-xs text-red-500 mt-1">
+            [class.border-red-500]="form.get('name')?.invalid && form.get('name')?.touched" />
+          <p *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched"
+            class="text-xs text-red-500 mt-1">
             El nombre del producto es obligatorio.
           </p>
         </div>
 
         <div class="space-y-1">
           <label class="block text-sm font-medium text-gray-700">Categoría</label>
-          <select
-            formControlName="category"
+          <select formControlName="category"
             class="w-full rounded-lg border-gray-300 border px-3 py-2 text-gray-900 bg-white focus:border-primary-500 focus:ring-primary-500 focus:outline-none cursor-pointer"
-            [class.border-red-500]="form.get('category')?.invalid && form.get('category')?.touched"
-          >
+            [class.border-red-500]="form.get('category')?.invalid && form.get('category')?.touched">
             <option value="" disabled selected>Selecciona una categoría</option>
             <option *ngFor="let cat of data.categories" [value]="cat._id">{{ cat.path }}</option>
           </select>
-          <p *ngIf="form.get('category')?.hasError('required') && form.get('category')?.touched" class="text-xs text-red-500 mt-1">
+          <p *ngIf="form.get('category')?.hasError('required') && form.get('category')?.touched"
+            class="text-xs text-red-500 mt-1">
             Debes seleccionar una categoría.
           </p>
         </div>
 
         <div class="space-y-1">
           <label class="block text-sm font-medium text-gray-700">Marca</label>
-          <select
-            formControlName="brand"
-            class="w-full rounded-lg border-gray-300 border px-3 py-2 text-gray-900 bg-white focus:border-primary-500 focus:ring-primary-500 focus:outline-none cursor-pointer"
-          >
+          <select formControlName="brand"
+            class="w-full rounded-lg border-gray-300 border px-3 py-2 text-gray-900 bg-white focus:border-primary-500 focus:ring-primary-500 focus:outline-none cursor-pointer">
             <option value="">Ninguna</option>
             <option *ngFor="let brand of data.brands" [value]="brand._id">{{ brand.name }}</option>
           </select>
@@ -58,12 +52,9 @@
 
         <div class="md:col-span-2 space-y-1">
           <label class="block text-sm font-medium text-gray-700">Descripción corta</label>
-          <textarea
-            rows="3"
-            formControlName="shortDescription"
+          <textarea rows="6" formControlName="shortDescription"
             placeholder="Ej: Zapatillas deportivas de punto elástico..."
-            class="w-full rounded-lg border-gray-300 border px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-primary-500 focus:outline-none resize-none"
-          ></textarea>
+            class="w-full rounded-lg border-gray-300 border px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-primary-500 focus:outline-none resize-none"></textarea>
         </div>
 
         <div class="md:col-span-2 pt-2 flex items-center">
@@ -76,10 +67,10 @@
     </div>
 
     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-      <div class="flex items-center justify-between gap-2 mb-2 border-b border-gray-100 pb-4">
+      <div class="flex items-center justify-between gap-2 mb-2 border-gray-300 border-b-2 pb-4">
         <div class="flex items-center gap-2">
           <div>
-            <h2 class="text-lg font-semibold text-gray-800 leading-none">Variantes del Producto</h2>
+            <h2 class="text-lg font-medium border leading-none">Variantes del Producto</h2>
             <p class="text-sm text-gray-500 mt-1 font-normal">Define precios, SKUs, stock y atributos.</p>
           </div>
         </div>
@@ -87,24 +78,20 @@
 
       <div class="space-y-4 mt-6">
         <div formArrayName="variants" class="space-y-4">
-          <div
-            *ngFor="let variant of variants.controls; let i = index"
-            [formGroupName]="i"
-            class="border border-gray-200 rounded-lg bg-gray-50/50 hover:bg-white hover:shadow-md transition-all duration-200 overflow-hidden"
-          >
+          <div *ngFor="let variant of variants.controls; let i = index" [formGroupName]="i"
+            class="border border-gray-200 rounded-lg bg-gray-50/50 hover:bg-white hover:shadow-md transition-all duration-200 overflow-hidden">
             <div class="flex items-center justify-between px-4 py-3 bg-gray-100/50 border-b border-gray-200">
               <div class="flex items-center gap-3">
-                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-xs font-bold text-gray-600">{{ i + 1 }}</span>
+                <span
+                  class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-xs font-bold text-gray-600">{{
+                  i + 1 }}</span>
                 <h3 class="font-semibold text-gray-700 text-sm">
                   {{ variant.get('sku')?.value || 'Nueva Variante' }}
                 </h3>
               </div>
-              <button
-                type="button"
-                (click)="removeVariant(i)"
+              <button type="button" (click)="removeVariant(i)"
                 class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-md transition-colors"
-                title="Eliminar variante"
-              >
+                title="Eliminar variante">
                 <mat-icon class="text-base flex items-center justify-center">delete</mat-icon>
               </button>
             </div>
@@ -113,33 +100,42 @@
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="space-y-1">
                   <label class="text-xs font-medium text-gray-600 uppercase tracking-wide">SKU</label>
-                  <input type="text" formControlName="sku" placeholder="Ej: ZAP-001-BL" class="w-full rounded-md border-gray-300 border px-3 py-1.5 text-sm focus:border-primary-500 focus:ring-primary-500 focus:outline-none" />
-                  <p *ngIf="variant.get('sku')?.hasError('required') && variant.get('sku')?.touched" class="text-xs text-red-500">Requerido.</p>
+                  <input type="text" formControlName="sku" placeholder="Ej: ZAP-001-BL"
+                    class="w-full rounded-md border-gray-300 border px-3 py-1.5 text-sm focus:border-primary-500 focus:ring-primary-500 focus:outline-none" />
+                  <p *ngIf="variant.get('sku')?.hasError('required') && variant.get('sku')?.touched"
+                    class="text-xs text-red-500">Requerido.</p>
                 </div>
                 <div class="space-y-1">
                   <label class="text-xs font-medium text-gray-600 uppercase tracking-wide">Precio</label>
                   <div class="relative">
-                     <span class="absolute left-1 top-1.5 text-gray-400 text-sm">s/.</span>
-                     <input type="number" formControlName="price" placeholder="0.00" class="w-full rounded-md border-gray-300 border pl-6 pr-3 py-1.5 text-sm focus:border-primary-500 focus:ring-primary-500 focus:outline-none" />
+                    <span class="absolute left-1 top-1.5 text-gray-400 text-sm">s/.</span>
+                    <input type="number" formControlName="price" placeholder="0.00"
+                      class="w-full rounded-md border-gray-300 border pl-6 pr-3 py-1.5 text-sm focus:border-primary-500 focus:ring-primary-500 focus:outline-none" />
                   </div>
-                   <p *ngIf="variant.get('price')?.hasError('required') && variant.get('price')?.touched" class="text-xs text-red-500">Requerido.</p>
+                  <p *ngIf="variant.get('price')?.hasError('required') && variant.get('price')?.touched"
+                    class="text-xs text-red-500">Requerido.</p>
                 </div>
                 <div class="space-y-1">
                   <label class="text-xs font-medium text-gray-600 uppercase tracking-wide">Stock</label>
-                  <input type="number" formControlName="stock" placeholder="0" class="w-full rounded-md border-gray-300 border px-3 py-1.5 text-sm focus:border-primary-500 focus:ring-primary-500 focus:outline-none" />
-                   <p *ngIf="variant.get('stock')?.hasError('required') && variant.get('stock')?.touched" class="text-xs text-red-500">Requerido.</p>
+                  <input type="number" formControlName="stock" placeholder="0"
+                    class="w-full rounded-md border-gray-300 border px-3 py-1.5 text-sm focus:border-primary-500 focus:ring-primary-500 focus:outline-none" />
+                  <p *ngIf="variant.get('stock')?.hasError('required') && variant.get('stock')?.touched"
+                    class="text-xs text-red-500">Requerido.</p>
                 </div>
               </div>
 
-              <div *ngIf="getAttributesArray(i).controls.length > 0" class="pt-4 border-t border-dashed border-gray-200">
+              <div *ngIf="getAttributesArray(i).controls.length > 0"
+                class="pt-4 border-t border-dashed border-gray-200">
                 <h5 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Especificaciones</h5>
                 <div formArrayName="attributes" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div *ngFor="let attr of getAttributesArray(i).controls; let j = index" [formGroupName]="j">
                     <div class="space-y-1">
-                       <label class="block text-xs font-medium text-gray-600">{{ attr.get('key')?.value }}</label>
-                       <select formControlName="value" class="w-full rounded-md border-gray-300 border px-2 py-1.5 text-sm bg-white focus:border-primary-500 focus:ring-primary-500 focus:outline-none">
-                         <option *ngFor="let option of attr.get('possibleValues')?.value" [value]="option">{{ option }}</option>
-                       </select>
+                      <label class="block text-xs font-medium text-gray-600">{{ attr.get('key')?.value }}</label>
+                      <select formControlName="value"
+                        class="w-full rounded-md border-gray-300 border px-2 py-1.5 text-sm bg-white focus:border-primary-500 focus:ring-primary-500 focus:outline-none">
+                        <option *ngFor="let option of attr.get('possibleValues')?.value" [value]="option">{{ option }}
+                        </option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -149,38 +145,31 @@
                 <h5 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Galería</h5>
                 <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                   <ng-container *ngFor="let imgUrl of getVariantImages(i).value; let imgIndex = index">
-                    <div class="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
+                    <div
+                      class="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
                       <img [src]="imgUrl" alt="Preview" class="w-full h-full object-cover" />
-                      <button
-                        type="button"
-                        (click)="removeImage(i, imgIndex, imgUrl)"
-                        class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-700"
-                      >
+                      <button type="button" (click)="removeImage(i, imgIndex, imgUrl)"
+                        class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-700">
                         <mat-icon class="text-xs flex items-center justify-center">close</mat-icon>
                       </button>
                     </div>
                   </ng-container>
 
-                  <button
-                    type="button"
-                    (click)="fileInput.click()"
-                    class="aspect-square border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:text-primary-600 hover:border-primary-500 hover:bg-primary-50 transition-all duration-200"
-                  >
+                  <button type="button" (click)="fileInput.click()"
+                    class="aspect-square border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:text-primary-600 hover:border-primary-500 hover:bg-primary-50 transition-all duration-200">
                     <mat-icon>add_a_photo</mat-icon>
                     <span class="text-[10px] font-medium mt-1 uppercase">Añadir</span>
                   </button>
-                  <input hidden type="file" multiple #fileInput (change)="onFileSelected($event, i)" accept="image/png, image/jpeg, image/webp" />
+                  <input hidden type="file" multiple #fileInput (change)="onFileSelected($event, i)"
+                    accept="image/png, image/jpeg, image/webp" />
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <button
-          type="button"
-          (click)="addVariant()"
-          class="w-full py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 font-medium hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50 transition-all flex items-center justify-center gap-2"
-        >
+        <button type="button" (click)="addVariant()"
+          class="w-full py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 font-medium hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50 transition-all flex items-center justify-center gap-2">
           <mat-icon>add</mat-icon>
           Añadir nueva variante
         </button>
@@ -188,9 +177,9 @@
     </div>
 
     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm" *ngIf="filterAttributes.controls.length > 0">
-      <div class="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+      <div class="flex items-center gap-2 mb-6 border-gray-300 border-b-2 pb-4">
         <div>
-          <h2 class="text-lg font-semibold text-gray-800 leading-none">Atributos de Filtrado</h2>
+          <h2 class="text-lg font-medium border leading-none">Atributos de Filtrado</h2>
           <p class="text-sm text-gray-500 mt-1 font-normal">Se usarán para filtrar en la tienda.</p>
         </div>
       </div>
@@ -198,10 +187,8 @@
       <div formArrayName="filterAttributes" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div *ngFor="let attr of filterAttributes.controls; let i = index" [formGroupName]="i" class="space-y-1">
           <label class="block text-sm font-medium text-gray-700">{{ attr.get('key')?.value }}</label>
-          <select
-            formControlName="value"
-            class="w-full rounded-lg border-gray-300 border px-3 py-2 text-gray-900 bg-white focus:border-primary-500 focus:ring-primary-500 focus:outline-none cursor-pointer"
-          >
+          <select formControlName="value"
+            class="w-full rounded-lg border-gray-300 border px-3 py-2 text-gray-900 bg-white focus:border-primary-500 focus:ring-primary-500 focus:outline-none cursor-pointer">
             <option [value]="''">— Ninguno —</option>
             <option *ngFor="let option of attr.get('possibleValues')?.value" [value]="option">{{ option }}</option>
           </select>
@@ -213,16 +200,12 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="border-t pt-4 pb-2 px-6 flex flex-col sm:flex-row gap-2 sm:gap-3 bg-white">
-  <button mat-stroked-button (click)="close()" [disabled]="isSaving" class="w-full sm:w-auto rounded-lg border-gray-300! text-gray-700">
+  <button mat-stroked-button (click)="close()" [disabled]="isSaving"
+    class="w-full sm:w-auto rounded-lg border-gray-300! text-gray-700">
     Cancelar
   </button>
-  <button
-    mat-flat-button
-    color="primary"
-    (click)="onSave()"
-    [disabled]="form.invalid || isSaving"
-    class="w-full sm:w-auto min-w-[120px] rounded-lg!"
-  >
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid || isSaving"
+    class="w-full sm:w-auto min-w-[120px] rounded-lg!">
     <ng-container *ngIf="isSaving; else saveText">
       <mat-icon class="animate-spin">sync</mat-icon>
       <span>Guardando...</span>

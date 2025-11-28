@@ -82,7 +82,7 @@ export class Header {
 
   openAuthDialog(): void {
     this.dialog.open(AuthDialog, {
-      width: '400px',
+      width: '450px',
       autoFocus: false,
     });
   }

@@ -3,7 +3,6 @@
   class="block group"
 >
   @if (mode === 'overlay') {
-    <!-- MODO OVERLAY: usado para categorías root -->
     <div class="relative h-[300px] overflow-hidden">
       <img
         [src]="category.image || 'assets/images/placeholder-category.png'"
@@ -23,7 +22,7 @@
   } @else {
     <!-- MODO BELOW: usado para subcategorías -->
     <div class="flex flex-col items-center">
-      <div class="h-[400px] w-full overflow-hidden bg-gray-100">
+      <div class="h-[400px] w-full overflow-hidden">
         <img
           [src]="category.image || 'assets/images/placeholder-category.png'"
           [alt]="category.name"

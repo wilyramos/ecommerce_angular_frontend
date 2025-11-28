@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://ecommerce-nestjs-mongodb-backend.onrender.com'
+  apiUrl: 'http://localhost:3000',
 };

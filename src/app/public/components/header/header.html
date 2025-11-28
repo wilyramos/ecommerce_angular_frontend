@@ -1,6 +1,7 @@
-<header class="fixed top-0 left-0 right-0 z-50 bg-white pt-2">
-  <nav class="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-
+<header
+  class="fixed top-0 left-0 right-0 z-50 bg-white pt-2 max-w-7xl mx-auto border-b border-gray-200 px-4 md:px-8"
+>
+  <nav class="container mx-auto flex items-center justify-between">
     <!-- Menú móvil -->
     <div class="flex md:hidden items-center">
       <button mat-icon-button [matMenuTriggerFor]="mobileMenu">
@@ -25,14 +26,17 @@
 
     <!-- Categorías desktop -->
     <div class="w-1/3 hidden md:flex justify-start">
-      <nav class="h-12 flex space-x-2 overflow-x-auto">
+      <nav class="h-10 flex space-x-4">
         @for (cat of categoriesRoot; track cat._id) {
-        <button (click)="selectCategory(cat)"
-          class="text-gray-600 hover:text-gray-500 hover:bg-[#f6f6f6] px-2 rounded whitespace-nowrap relative transition cursor-pointer"
-          [class.text-black]="selectedCategory?._id === cat._id">
+        <button
+          (click)="selectCategory(cat)"
+          class="text-gray-600 hover:text-gray-500 hover:bg-[#f6f6f6] relative transition cursor-pointer text-xs lg:text-sm"
+          [class.text-gray-900]="selectedCategory?._id === cat._id"
+          [class.font-bold]="selectedCategory?._id === cat._id"
+        >
           {{ cat.name }}
           @if (selectedCategory?._id === cat._id) {
-          <span class="absolute bottom-0 left-0 right-0 h-1 bg-black rounded-t"></span>
+          <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></span>
           }
         </button>
         }
@@ -41,25 +45,33 @@
 
     <!-- Logo -->
     <div class="flex-1 flex justify-center md:w-1/3">
-      <a routerLink="/" class="text-2xl md:text-3xl font-bold tracking-wide text-gray-900 select-none">
+      <a
+        routerLink="/"
+        class="text-2xl md:text-3xl font-extrabold tracking-wide text-gray-900 select-none"
+      >
         BALENS
       </a>
     </div>
 
     <!-- Iconos -->
     <div class="hidden md:flex w-1/3 justify-end space-x-4">
-      <button mat-icon-button aria-label="Buscar">
-        <mat-icon fontSet="material-icons-outlined" class="text-black">search</mat-icon>
+      <button
+        mat-icon-button
+        [matBadge]="favoritesItemCount"
+        matBadgeColor="accent"
+        aria-label="Favoritos"
+      >
+        <mat-icon fontSet="material-icons-outlined"> favorite_border </mat-icon>
       </button>
-      <button mat-icon-button [matBadge]="favoritesItemCount" matBadgeColor="accent" aria-label="Favoritos">
-        <mat-icon fontSet="material-icons-outlined">
-          favorite_border
-        </mat-icon>
-        </button>
       <button mat-icon-button (click)="openAuthDialog()">
         <mat-icon fontSet="material-icons-outlined" class="text-black">person_outline</mat-icon>
       </button>
-      <button mat-icon-button (click)="openCartSheet()" [matBadge]="cartItemCount" matBadgeColor="accent">
+      <button
+        mat-icon-button
+        (click)="openCartSheet()"
+        [matBadge]="cartItemCount"
+        matBadgeColor="accent"
+      >
         <mat-icon fontSet="material-icons-outlined">local_mall</mat-icon>
       </button>
 
@@ -68,35 +80,125 @@
   </nav>
 
   <!-- Subcategorías (solo si hay selectedCategory) -->
-  @if (selectedCategory?.children?.length) {
-  <div class="relative border-b border-gray-200 hidden md:block">
-    <nav class="container mx-auto h-10 px-8 flex items-center space-x-6">
-      @for (sub of selectedCategory.children; track sub._id) {
-      <div class="group flex h-full items-center">
-        <a [routerLink]="['/products/category', sub.slug]"
-          class="text-gray-600 hover:text-black whitespace-nowrap transition-colors duration-150">
-          {{ sub.name }}
-        </a>
-        @if (sub.children?.length) {
-        <div
-          class="absolute left-0 right-0 top-10 hidden group-hover:block bg-white border border-gray-200 shadow-lg z-50">
-          <ul class="container mx-auto px-8 py-4 grid grid-flow-col grid-rows-5 gap-x-12 gap-y-2">
-            @for (child3 of sub.children; track child3._id) {
-            <li>
-              <a [routerLink]="['/products/category', child3.slug]"
-                class="block py-1 text-gray-600 hover:text-black whitespace-nowrap">
-                {{ child3.name }}
-              </a>
-            </li>
-            }
-          </ul>
+  <div class="flex justify-between max-w-7xl mx-auto">
+    @if (selectedCategory?.children?.length) {
+    <div class="relative hidden md:block">
+      <nav class="container mx-auto h-10 flex items-center space-x-6">
+        @for (sub of selectedCategory.children; track sub._id) {
+        <div class="group flex h-full items-center">
+          <a
+            [routerLink]="['/products/category', sub.slug]"
+            class="text-gray-600 hover:text-black whitespace-nowrap transition-colors duration-150"
+          >
+            {{ sub.name }}
+          </a>
+          @if (sub.children?.length) {
+          <div
+            class="absolute left-0 right-0 top-10 hidden group-hover:block bg-white border border-gray-200 shadow-lg z-50"
+          >
+            <ul class="container mx-auto px-8 py-4 grid grid-flow-col grid-rows-5 gap-x-12 gap-y-2">
+              @for (child3 of sub.children; track child3._id) {
+              <li>
+                <a
+                  [routerLink]="['/products/category', child3.slug]"
+                  class="block py-1 text-gray-600 hover:text-black whitespace-nowrap"
+                >
+                  {{ child3.name }}
+                </a>
+              </li>
+              }
+            </ul>
+          </div>
+          }
         </div>
         }
+      </nav>
+    </div>
+    }
+
+    <!-- BUSCADOR DESKTOP -->
+    <div class="relative hidden md:flex items-center">
+      <button mat-icon-button (click)="openSearchOverlay()" aria-label="Buscar">
+        <mat-icon fontSet="material-icons-outlined">search</mat-icon>
+      </button>
+    </div>
+
+    <!-- OVERLAY ESTILO FARFATECH -->
+    <div
+      *ngIf="searchOpen"
+      class="fixed left-0 right-0 bg-white shadow-xl z-9999 border-b border-gray-200 animate-[fadeDown_0.25s_ease-out]"
+    >
+      <div class="max-w-7xl mx-auto px-4 md:px-8 py-6">
+        <!-- Barra de búsqueda centrada -->
+        <div
+          class="flex items-center max-w-lg mx-auto bg-gray-100 rounded-full h-12 px-5 focus-within:border-black transition"
+        >
+          <mat-icon fontSet="material-icons-outlined" class="text-gray-500 mr-2">search</mat-icon>
+
+          <input
+            autofocus
+            type="text"
+            [(ngModel)]="searchQuery"
+            (input)="filterSuggestions()"
+            (keydown.enter)="submitSearch()"
+            (blur)="handleBlur()"
+            placeholder="Buscar productos, colecciones, marcas…"
+            class="flex-1 bg-transparent outline-none text-gray-700"
+            autocomplete="off"
+          />
+
+          <button mat-icon-button (mousedown)="closeSearchOverlay()">
+            <mat-icon fontSet="material-icons-outlined">close</mat-icon>
+          </button>
+        </div>
+
+        <!-- Contenido -->
+        <div class="max-w-2xl mx-auto mt-6">
+          <!-- Recientes -->
+          <div *ngIf="recentSearches.length > 0" class="mb-6">
+            <h4 class="text-xs font-medium text-gray-400 mb-2 tracking-wide">
+              BUSCADOS RECIENTEMENTE
+            </h4>
+
+            <div class="flex flex-col gap-1">
+              <div
+                *ngFor="let r of recentSearches"
+                (mousedown)="selectRecent(r)"
+                class="px-3 py-2 text-sm cursor-pointer rounded-md hover:bg-gray-100 text-gray-700"
+              >
+                {{ r }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Sugerencias -->
+          <div *ngIf="suggestions.length > 0">
+            <h4 class="text-xs font-medium text-gray-400 mb-2 tracking-wide">SUGERENCIAS</h4>
+
+            <div class="flex flex-col gap-1">
+              <div
+                *ngFor="let s of suggestions"
+                (mousedown)="selectSuggestion(s)"
+                class="px-3 py-2 text-sm cursor-pointer rounded-md hover:bg-gray-100 text-gray-700"
+              >
+                {{ s }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Vacío -->
+          <div
+            *ngIf="
+              recentSearches.length === 0 && suggestions.length === 0 && searchQuery.length < 2
+            "
+            class="text-center text-gray-400 text-sm py-10"
+          >
+            Empieza a escribir para ver sugerencias.
+          </div>
+        </div>
       </div>
-      }
-    </nav>
+    </div>
   </div>
-  }
 </header>
 
 <main class="pt-[104px]"></main>
